@@ -1,6 +1,22 @@
 spring:
   application.name: movies-social-app
 
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: "jdbc:mysql://localhost:3306/movies-social-app?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC"
+    username: ${db_username}
+    password: ${db_password}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        #        show_sql: true
+        format_sql: true
+    defer-datasource-initialization: true
+
   thymeleaf:
     check-template-location: true
     cache: false
