@@ -1,0 +1,180 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    padding: 2em;
+    font: 14px/1.5 Arial, sans-serif;
+    background: #fff;
+}
+
+label {
+    display: block;
+    padding-left: 2px;
+    padding-bottom: 2px;
+    font-weight: 700;
+}
+
+.site-header {
+    display: block;
+
+}
+.site-header.text-align {
+    text-align: center;
+}
+
+.image.image-size-reg {
+    width: 15%;
+}
+
+.site-content {
+    margin: 0 auto;
+    padding: 14px 18px
+}
+
+.center-section {
+    width: 700px;
+    margin: auto;
+}
+
+.a-box {
+    display: block;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 8px;
+    width: 350px;
+    margin: 0 auto;
+}
+
+.a-box-inner {
+    border-radius: 4px;
+    position: relative;
+    padding: 14px 18px;
+}
+
+.a-input-text {
+    background-color: #fff;
+    height: 31px;
+    padding: 3px 7px;
+    line-height: normal;
+    border: 1px solid #a6a6a6;
+    border-top-color: #949494;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .5), 0 1px 0 rgba(0, 0, 0, .07) inset;
+    outline: 0;
+}
+
+.a-span12 {
+    width: 100%;
+}
+
+.a-spacing-base {
+    margin-bottom: 1em;
+    width: 100%;
+}
+
+.h1-margin {
+    margin-bottom: 0.5em;
+}
+
+.h1-margin.width {
+    font-weight: 500;
+}
+
+button {
+    cursor: pointer;
+}
+
+.a-spacing-extra-large {
+    margin-bottom: 1em;
+}
+
+.b-spacing-extra-large {
+    margin-bottom: 1em;
+    margin-top: 0.5em;
+}
+
+.a-button-inner:hover {
+    background: darkorange;
+    color: #fff;
+}
+
+.a-button-text {
+    background-color: transparent;
+    border: 0;
+    display: block;
+    font-family: Arial, sans-serif;
+    line-height: 29px;
+    margin: 0;
+    outline: 0;
+    padding: 0 10px 0 11px;
+    text-align: center;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.a-button {
+    background: #e7e9ec;
+    border-radius: 10px;
+    border-color: #adb1b8 #a2a6ac #8d9096;
+    border-style: solid;
+    border-width: 1px;
+    cursor: pointer;
+    display: inline-block;
+    padding: 0;
+    text-align: center;
+    text-decoration: none !important;
+    vertical-align: middle;
+}
+
+.a-button-span12 {
+    width: 100%;
+}
+
+.a-button-primary {
+    background: #F2AC17;
+    border-color: #000000ef;
+}
+
+.b-button-primary {
+    background: #fff;
+    border-color: black;
+}
+
+.a-button-text.text-color {
+    color: #7e69b8;
+    font-weight: 700;
+}
+
+.a-divider-inner {
+    height: 40px;
+    margin-bottom: -18px;
+    background: linear-gradient(rgba(0, 0, 0, .14), rgba(0, 0, 0, 0) 3px, transparent);
+    z-index: 0;
+    zoom: 1;
+}
+
+.a-row {
+    width: 100%;
+    text-align: center;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.a-link-emphasis {
+    position: relative;
+    text-decoration: none;
+    color: #7e69b8;
+}
+
+.a-checkbox-label {
+    position: relative;
+    padding-left: 5px;
+    text-indent: 0;
+}
+
+.a-button-inner {
+    border-radius: 10px;
+}
