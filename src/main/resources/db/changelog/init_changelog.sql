@@ -15,8 +15,7 @@ create table users
 (
     id        bigint      not null auto_increment,
     username  varchar(14) not null UNIQUE,
-    first_name varchar(15) not null,
-    last_name  varchar(20) not null,
+    full_name varchar(36) not null,
     email     varchar(40) not null UNIQUE,
     password  varchar(80) not null,
     primary key (id)
