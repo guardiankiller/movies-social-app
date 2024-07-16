@@ -22,25 +22,16 @@ public class SecurityConfiguration {
                 )
                 .formLogin(formLogin ->
                         formLogin
-                                // Where is our custom login form?
                                 .loginPage("/login")
-                                // What is the name of the username parameter in the login Post request?
                                 .usernameParameter("email")
-                                // What is the name of the password parameter in the login Post request?
                                 .passwordParameter("password")
-                                // What will happen if the login is successful?
                                 .defaultSuccessUrl("/", true)
-                                // What will happen if the login fails?
-//                                .failureForwardUrl("users/login-error")
                 )
                 .logout(
                         logout ->
                                 logout
-                                        // What is the logout url?
-                                        .logoutUrl("/users/logout")
-                                        // Where to go after successful logout?
+                                        .logoutUrl("/logout")
                                         .logoutSuccessUrl("/")
-                                        // Invalidate the session after logout
                                         .invalidateHttpSession(true)
                 )
                 .build();
