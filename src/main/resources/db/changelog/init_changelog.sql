@@ -17,7 +17,7 @@ create table users
     username  varchar(14) not null UNIQUE,
     full_name varchar(36) not null,
     email     varchar(40) not null UNIQUE,
-    password  varchar(80) not null,
+    password  varchar(200) not null,
     primary key (id)
 ) engine = InnoDB;
 
