@@ -1,7 +1,7 @@
 package bg.guardiankiller.moviessocialapp.service.impl;
 
 import bg.guardiankiller.moviessocialapp.model.UserRoles;
-import bg.guardiankiller.moviessocialapp.model.entity.Role;
+import bg.guardiankiller.moviessocialapp.model.entity.RoleEntity;
 import bg.guardiankiller.moviessocialapp.repository.RoleRepository;
 import bg.guardiankiller.moviessocialapp.service.RoleService;
 import jakarta.annotation.PostConstruct;
@@ -24,15 +24,15 @@ public class RoleServiceImpl implements RoleService {
             return;
         }
 
-        Role defaultRole = new Role();
-        defaultRole.setName(UserRoles.USER);
-        roleRepository.save(defaultRole);
+        RoleEntity defaultRoleEntity = new RoleEntity();
+        defaultRoleEntity.setName(UserRoles.USER);
+        roleRepository.save(defaultRoleEntity);
 
-        Role moderator = new Role();
+        RoleEntity moderator = new RoleEntity();
         moderator.setName(UserRoles.MODERATOR);
         roleRepository.save(moderator);
 
-        Role admin = new Role();
+        RoleEntity admin = new RoleEntity();
         admin.setName(UserRoles.ADMIN);
         roleRepository.save(admin);
     }
