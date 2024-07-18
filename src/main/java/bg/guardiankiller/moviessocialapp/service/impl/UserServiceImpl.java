@@ -2,8 +2,8 @@ package bg.guardiankiller.moviessocialapp.service.impl;
 
 import bg.guardiankiller.moviessocialapp.model.UserRoles;
 import bg.guardiankiller.moviessocialapp.model.dto.UserRegisterDTO;
-import bg.guardiankiller.moviessocialapp.model.entity.Role;
-import bg.guardiankiller.moviessocialapp.model.entity.User;
+import bg.guardiankiller.moviessocialapp.model.entity.RoleEntity;
+import bg.guardiankiller.moviessocialapp.model.entity.UserEntity;
 import bg.guardiankiller.moviessocialapp.repository.RoleRepository;
 import bg.guardiankiller.moviessocialapp.repository.UserRepository;
 import bg.guardiankiller.moviessocialapp.service.UserService;
@@ -29,12 +29,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void registerUser(UserRegisterDTO userRegisterDTO) {
-        User newUser = mapper.map(userRegisterDTO, User.class);
-        newUser.setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
-        Role role = roleRepository.findByName(UserRoles.USER);
-        newUser.addRole(role);
+        UserEntity newUserEntity = mapper.map(userRegisterDTO, UserEntity.class);
+        newUserEntity.setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
+        RoleEntity roleEntity = roleRepository.findByName(UserRoles.USER);
+        newUserEntity.addRole(roleEntity);
 
-        userRepository.save(newUser);
+        userRepository.save(newUserEntity);
     }
 
 }

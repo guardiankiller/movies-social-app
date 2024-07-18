@@ -12,7 +12,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "users")
-public class User {
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -34,14 +34,14 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<Role> roles;
+    private Set<RoleEntity> roles;
 
-    public User() {
+    public UserEntity() {
         this.roles = new HashSet<>();
     }
 
-    public void addRole(Role role) {
-        getRoles().add(role);
-        role.getUsers().add(this);
+    public void addRole(RoleEntity roleEntity) {
+        getRoles().add(roleEntity);
+        roleEntity.getUsers().add(this);
     }
 }
