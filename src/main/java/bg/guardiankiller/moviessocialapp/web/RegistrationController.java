@@ -2,6 +2,7 @@ package bg.guardiankiller.moviessocialapp.web;
 
 import bg.guardiankiller.moviessocialapp.model.dto.UserRegisterDTO;
 import bg.guardiankiller.moviessocialapp.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,7 +28,7 @@ public class RegistrationController {
 
     @PostMapping("/register")
     public String postRegister(
-            UserRegisterDTO userRegisterDTO,
+            @Valid UserRegisterDTO userRegisterDTO,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes,
             Model model
