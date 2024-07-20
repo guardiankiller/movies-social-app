@@ -1,5 +1,7 @@
 package bg.guardiankiller.moviessocialapp.config;
 
+import bg.guardiankiller.moviessocialapp.repository.UserRepository;
+import bg.guardiankiller.moviessocialapp.service.impl.UserDetailsServiceImpl;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +25,7 @@ public class SecurityConfiguration {
                 .formLogin(formLogin ->
                         formLogin
                                 .loginPage("/login")
-                                .usernameParameter("email")
+                                .usernameParameter("username")
                                 .passwordParameter("password")
                                 .defaultSuccessUrl("/", true)
                 )
@@ -34,7 +36,22 @@ public class SecurityConfiguration {
                                         .logoutSuccessUrl("/")
                                         .invalidateHttpSession(true)
                 )
+                .rememberMe(
+                        remember ->
+                                remember
+                                        .rememberMeParameter("remember")
+                                        .key("remember Me Encryption Key")
+                                        .rememberMeCookieName("rememberMeCookieName")
+                                        .tokenValiditySeconds(10000)
+                )
                 .build();
+
+
+    }
+
+    @Bean
+    public UserDetailsServiceImpl userDetailsService(UserRepository userRepository) {
+        return new UserDetailsServiceImpl(userRepository);
     }
 
     @Bean
