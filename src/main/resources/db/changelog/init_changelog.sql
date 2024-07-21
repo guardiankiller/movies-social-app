@@ -14,10 +14,10 @@ create table roles
 create table users
 (
     id        bigint      not null auto_increment,
-    username  varchar(14) not null UNIQUE,
+    username  varchar(20) not null UNIQUE,
     full_name varchar(36) not null,
     email     varchar(40) not null UNIQUE,
-    password  varchar(200) not null,
+    password  varchar(300) not null,
     primary key (id)
 ) engine = InnoDB;
 
