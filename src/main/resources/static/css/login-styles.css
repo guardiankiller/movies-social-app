@@ -87,6 +87,10 @@ button {
     cursor: pointer;
 }
 
+.text-decoration {
+    text-decoration: none;
+}
+
 .a-spacing-extra-large {
     margin-bottom: 1em;
 }

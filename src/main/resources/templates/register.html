@@ -7,6 +7,18 @@
     <link rel="stylesheet" href="/css/register-styles.css">
 </head>
 
+<script>
+    function matchPassword() {
+        let pass = document.getElementById("password").value;
+        let confirmPass = document.getElementById("confirmPassword").value;
+        if(pass != confirmPass)
+        {
+            alert("Passwords did not match");
+            return false;
+        }
+    }
+</script>
+
 <body>
 <div class="site">
 
@@ -82,12 +94,12 @@
                         </div>
                         <div class="a-spacing-extra-large">
                             <span class="a-button a-button-span12 a-button-primary">
-                                <button class="a-button-inner a-button-text text-color" type="submit">Create your JUST account</button>
+                                <button class="a-button-inner a-button-text text-color" type="submit" onclick="matchPassword()">Create your JUST account</button>
                             </span>
                         </div>
                         <div class="a-divider-inner"></div>
                         <div class="a-row">Already have an account?
-                            <a href="#" class="a-link-emphasis">Sign in</a>
+                            <a href="login.html" class="a-link-emphasis">Sign in</a>
                         </div>
                     </div>
                 </div>

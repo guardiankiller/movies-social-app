@@ -7,34 +7,39 @@
     <link rel="stylesheet" href="/css/login-styles.css">
 </head>
 <body>
-    <div class="site">
-        
-        <header class="site-header text-align">
-            <a class="link-nav-icon" href="#">
-                <img class="image image-size-reg" src="/images/logo-just-watch-together.png" alt="logo">
-            </a>
-        </header>
-        
-        <main class="site-content">
+<div class="site">
+
+    <header class="site-header text-align">
+        <a class="link-nav-icon" href="#">
+            <img class="image image-size-reg" src="/images/logo-just-watch-together.png" alt="logo">
+        </a>
+    </header>
+
+    <main class="site-content">
+        <form
+                th:action="@{/login}"
+                method="post">
             <div class="center-section">
                 <div class="a-box">
                     <div class="a-box-inner">
                         <h1 class="h1-margin width">Sign in</h1>
                         <div class="a-spacing-base">
-                            <label for="ap_email">Email</label>
-                            <input type="email" id="ap_email" placeholder="person@example.com" name="email" class="a-input-text a-span12" aria-required="true">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" class="a-input-text a-span12"
+                                   aria-required="true">
                         </div>
                         <div class="a-spacing-base">
-                            <label for="ap_password">Password</label>
-                            <input type="password" id="ap_password" placeholder="at least 8 characters" name="password" class="a-input-text a-span12" aria-required="true">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" placeholder="at least 8 characters" name="password"
+                                   class="a-input-text a-span12" aria-required="true">
                         </div>
                         <div class="a-spacing-extra-large">
                             <span class="a-button a-button-span12 a-button-primary">
-                                <button class="a-button-inner a-button-text text-color">Sign in</button>
+                                <button class="a-button-inner a-button-text text-color" type="submit">Sign in</button>
                             </span>
                         </div>
                         <label>
-                            <input type="checkbox" name="rememberMe" value="true">
+                            <input type="checkbox" name="remember" value="true">
                             <span class="a-label a-checkbox-label">
                                 Keep me signed in.
                             </span>
@@ -43,19 +48,21 @@
                         <div class="a-row">New to JUST?
                             <div class="b-spacing-extra-large">
                             <span class="a-button a-button-span12 b-button-primary">
-                                <button class="a-button-inner a-button-text text-color">Create your JUST account</button>
+                                <a class="a-button-inner a-button-text text-color text-decoration" href="register.html">Create your JUST account</a>
+                                <!--                            //TODO -->
                             </span>
-                        </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
-        
-        <footer class="site-footer">
-            
-        </footer>
-        
-    </div>
+        </form>
+    </main>
+
+    <footer class="site-footer">
+
+    </footer>
+
+</div>
 </body>
 </html>
