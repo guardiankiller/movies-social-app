@@ -1,1 +1,8 @@
-var a = 5
+plugins {
+    id "com.github.node-gradle.node" version '7.0.1'
+}
+
+node {
+    version = '20.15.0'
+    download = true
+}
