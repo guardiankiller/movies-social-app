@@ -1,0 +1,26 @@
+plugins {
+    id "com.github.node-gradle.node" version '7.0.1'
+}
+
+node {
+    version = '20.15.0'
+    download = true
+}
+
+var task = tasks.register('env.bat') {
+    var nodeSetup = tasks.named('nodeSetup').get()
+    var npmSetup = tasks.named('npmSetup').get()
+
+    dependsOn nodeSetup
+    npmSetup.dependsOn(it)
+
+    inputs.files(nodeSetup.outputs.files)
+    outputs.file("$projectDir/env.bat")
+    doLast {
+        outputs.files.singleFile.write("""@echo off
+set PATH=${inputs.files.singleFile};%PATH%
+""")
+    }
+}
+
+tasks.named('npmSetup').get().dependsOn(task.get())
