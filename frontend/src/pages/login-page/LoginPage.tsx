@@ -1,8 +1,23 @@
 import { Link } from 'react-router-dom'
 import logo from '../../assets/logo-just-watch-together.png'
 import classes from './LoginPage.module.css'
+import { getServerInfo } from '../../utils/api-functions'
+import { useEffect } from 'react'
 
 function LoginPage() {
+  
+  useEffect(() => {
+    const func = async () => {
+      try {
+        const response = await getServerInfo()
+      } catch (e) {
+        if(e instanceof Error) {
+          console.log(e.message)
+        }
+      }
+    }
+    func();
+  }, []);
 
   return (
     <div>
