@@ -3,7 +3,8 @@ import logo from '../../assets/logo-just-watch-together.png'
 import classes from './RegisterPage.module.css'
 import { useEffect, useState } from 'react'
 import createFormReducer from '../../utils/form-reducer'
-import { type RegisterForm, type ViolationResponse } from '../../utils/models'
+import { type RegisterForm } from '../../utils/models'
+import { validateRegister } from '../../utils/api-functions'
 
 interface FormFieldProps {
   displayName: string
@@ -53,21 +54,14 @@ function RegisterPage() {
 
   useEffect(() => {
     const timer = setTimeout(async () => {
-      const response = await fetch('/api/users?dryRun=true',  {
-        method: 'POST', // Specify the request method
-        headers: {
-          'Content-Type': 'application/json', // Set the content type to JSON
-        },
-        body: JSON.stringify(form)});
-      if(!response.ok) {
-        const errors: ViolationResponse = await response.json()
-
+      const response = await validateRegister(form);
+      if(response) {
         setErrors({
-          username: errors.errors.find(x => x.property === 'username')?.message ?? '',
-          email: errors.errors.find(x => x.property === 'email')?.message ?? '',
-          password: errors.errors.find(x => x.property === 'password')?.message ?? '',
-          confirmPassword: errors.errors.find(x => x.property === 'confirmPassword')?.message ?? '',
-          fullName: errors.errors.find(x => x.property === 'fullName')?.message ?? '',
+          username: response.errors.find(x => x.property === 'username')?.message ?? '',
+          email: response.errors.find(x => x.property === 'email')?.message ?? '',
+          password: response.errors.find(x => x.property === 'password')?.message ?? '',
+          confirmPassword: response.errors.find(x => x.property === 'confirmPassword')?.message ?? '',
+          fullName: response.errors.find(x => x.property === 'fullName')?.message ?? '',
         })
       } else {
         setErrors(initalState)
@@ -124,7 +118,7 @@ function RegisterPage() {
                   value={form.password}
                   setValue={e => dispatch('password', e)}
                   placeholder="at least 8 characters"
-                  type='pasword'
+                  type='password'
                   error={errors.password}
                 />
                 <FormField
@@ -133,7 +127,7 @@ function RegisterPage() {
                   value={form.confirmPassword}
                   setValue={e => dispatch('confirmPassword', e)}
                   placeholder="at least 8 characters"
-                  type='pasword'
+                  type='password'
                   error={errors.confirmPassword}
                 />
                 <div className={`${classes.aSpacingExtraLarge}`}>
