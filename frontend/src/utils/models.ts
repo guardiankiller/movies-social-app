@@ -37,5 +37,5 @@ export interface Violation {
 
 export interface ViolationResponse {
   message: string
-  error: Violation[]
+  errors: Violation[]
 }
