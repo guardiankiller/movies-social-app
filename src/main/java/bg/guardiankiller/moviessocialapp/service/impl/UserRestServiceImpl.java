@@ -1,6 +1,7 @@
 package bg.guardiankiller.moviessocialapp.service.impl;
 
 import bg.guardiankiller.moviessocialapp.exception.ValidationException;
+import bg.guardiankiller.moviessocialapp.model.dto.UserDTO;
 import bg.guardiankiller.moviessocialapp.model.dto.UserRegisterDTO;
 import bg.guardiankiller.moviessocialapp.model.dto.UserRegisterRestDTO;
 import bg.guardiankiller.moviessocialapp.service.UserRestService;
@@ -10,6 +11,7 @@ import jakarta.validation.ConstraintViolation;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -36,5 +38,10 @@ public class UserRestServiceImpl implements UserRestService {
             UserRegisterDTO dto = mapper.map(form, UserRegisterDTO.class);
             userService.registerUser(dto);
         }
+    }
+
+    @Override
+    public Optional<UserDTO> findUserByUsername(String username) {
+        return userService.findUserByUsername(username);
     }
 }

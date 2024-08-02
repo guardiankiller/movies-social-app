@@ -1,5 +1,8 @@
 package bg.guardiankiller.moviessocialapp.config;
 
+import bg.guardiankiller.moviessocialapp.filter.AccessTokenFilter;
+import bg.guardiankiller.moviessocialapp.jwt.JWTEntry;
+import bg.guardiankiller.moviessocialapp.jwt.JWTKeystore;
 import bg.guardiankiller.moviessocialapp.repository.UserRepository;
 import bg.guardiankiller.moviessocialapp.service.impl.UserDetailsServiceImpl;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -9,9 +12,11 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 
@@ -19,8 +24,14 @@ import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 public class SecurityConfiguration {
 
     @Bean
+    public JWTEntry authTokenKey() {
+        JWTKeystore keystore = JWTKeystore.fromClasspath("token-key-keystore", "changeit");
+        return keystore.getEntry("token-key", "changeit");
+    }
+
+    @Bean
     @Order(1)
-    public SecurityFilterChain restFilterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain restFilterChain(AccessTokenFilter filter, HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .securityMatcher("/api/**")
                 .csrf(AbstractHttpConfigurer::disable)
@@ -28,6 +39,10 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests.requestMatchers( HttpMethod.POST, "/api/users", "/api/auth").permitAll()
                                 .anyRequest().permitAll())
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .anonymous(AbstractHttpConfigurer::disable)
                 .build();
     }
 

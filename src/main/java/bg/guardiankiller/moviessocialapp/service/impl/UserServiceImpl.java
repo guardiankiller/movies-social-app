@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -42,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserDTO> findUserByUsername(String username) {
-        return userRepository.findUserByUsername(username).map(e->mapper.map(e, UserDTO.class));
+        return userRepository.findUserByUsername(username).map(this::toUserDTO);
     }
 
     @Override
@@ -51,5 +53,11 @@ public class UserServiceImpl implements UserService {
                 .findUserByUsername(username)
                 .map(user -> passwordEncoder.matches(password, user.getPassword()))
                 .orElse(false);
+    }
+
+    private UserDTO toUserDTO(UserEntity entity) {
+        var dto = mapper.map(entity, UserDTO.class);
+        dto.setRoles(entity.getRoles().stream().map(RoleEntity::getName).collect(Collectors.toSet()));
+        return dto;
     }
 }
