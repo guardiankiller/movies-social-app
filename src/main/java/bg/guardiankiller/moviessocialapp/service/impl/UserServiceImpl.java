@@ -1,6 +1,7 @@
 package bg.guardiankiller.moviessocialapp.service.impl;
 
 import bg.guardiankiller.moviessocialapp.model.UserRoles;
+import bg.guardiankiller.moviessocialapp.model.dto.UserDTO;
 import bg.guardiankiller.moviessocialapp.model.dto.UserRegisterDTO;
 import bg.guardiankiller.moviessocialapp.model.entity.RoleEntity;
 import bg.guardiankiller.moviessocialapp.model.entity.UserEntity;
@@ -11,6 +12,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -37,4 +40,16 @@ public class UserServiceImpl implements UserService {
         userRepository.save(newUserEntity);
     }
 
+    @Override
+    public Optional<UserDTO> findUserByUsername(String username) {
+        return userRepository.findUserByUsername(username).map(e->mapper.map(e, UserDTO.class));
+    }
+
+    @Override
+    public boolean authenticateUser(String username, String password) {
+        return userRepository
+                .findUserByUsername(username)
+                .map(user -> passwordEncoder.matches(password, user.getPassword()))
+                .orElse(false);
+    }
 }
