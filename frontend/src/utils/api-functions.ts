@@ -1,4 +1,4 @@
-import { ActuatorInfo, ViolationResponse } from "./models";
+import { ActuatorInfo, RegisterForm, ViolationResponse } from "./models";
 
 export async function getServerInfo(): Promise<ActuatorInfo> {
     const response = await fetch('/actuator/info');
@@ -25,4 +25,18 @@ export async function validateRegister(form: RegisterForm) {
       const errors: ViolationResponse = await response.json()
       return errors
     }
-  }
+}
+
+export async function submitRegister(form: RegisterForm) {
+    const response = await fetch('/api/users',  {
+      method: 'POST', // Specify the request method
+      headers: {
+        'Content-Type': 'application/json', // Set the content type to JSON
+      },
+      body: JSON.stringify(form)});
+    if(response.ok) {
+      return null
+    } else {
+      return response.statusText
+    }
+}

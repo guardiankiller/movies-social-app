@@ -4,7 +4,8 @@ import classes from './RegisterPage.module.css'
 import { useEffect, useState } from 'react'
 import createFormReducer from '../../utils/form-reducer'
 import { type RegisterForm } from '../../utils/models'
-import { validateRegister } from '../../utils/api-functions'
+import { submitRegister, validateRegister } from '../../utils/api-functions'
+import { Alert, CloseButton } from 'react-bootstrap'
 
 interface FormFieldProps {
   displayName: string
@@ -15,7 +16,6 @@ interface FormFieldProps {
   type?: string
   placeholder?: string
 }
-
 
 function FormField(props: FormFieldProps) {
   const [dirty, setDirty] = useState(false)
@@ -43,6 +43,31 @@ function FormField(props: FormFieldProps) {
   )
 }
 
+interface ToastProps {
+  variant: 'danger' | 'success'
+  message?: string
+  id: number
+}
+
+function Toast(props: ToastProps) {
+  const [show, setShow] = useState(false)
+
+  useEffect(() => {
+    if(props.message) {
+      setShow(true)
+      setTimeout(()=> setShow(false), 3000)
+    }
+  }, [props.message, props.id]);
+
+  return(
+    <>
+        {show ? <Alert variant='danger' style={{width: 'fit-content', margin: '1em auto', display: 'flex', gap: '10px'}}>
+        <span>{props.message}</span> <CloseButton onClick={_ => setShow(false)}/>
+        </Alert>: null}
+    </>
+  )
+}
+
 function RegisterPage() {
   const initalState: RegisterForm = {
     username: '', password: '', confirmPassword: '', email: '', fullName: ''
@@ -51,6 +76,18 @@ function RegisterPage() {
   const [form, dispatch] = createFormReducer(initalState)
 
   const [errors, setErrors] = useState(initalState)
+
+  const [error, setError] = useState({msg: '', id: 0})
+
+  const [success, setSuccess] = useState({msg: '', id:0})
+
+  function showError(msg: string) {
+    setError({msg, id: error.id++})
+  }
+
+  function showSuccess(msg: string) {
+    setSuccess({msg, id: success.id++})
+  }
 
   useEffect(() => {
     const timer = setTimeout(async () => {
@@ -70,9 +107,16 @@ function RegisterPage() {
     return () => clearTimeout(timer)
   }, [form])
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     console.log("Submit")
+    const response = await submitRegister(form)
+    if(response) {
+      showError(response)
+    } else {
+      console.log("Success")
+      showSuccess("OK")
+    }
   }
 
   return (
@@ -83,6 +127,8 @@ function RegisterPage() {
         </a>
       </header>
       <main className={`${classes.siteContent}`}>
+        <Toast variant='danger' message={error.msg} id={error.id}/>
+        <Toast variant='success' message={success.msg} id={success.id}/> 
         <form action="" onSubmit={onSubmit}>
           <div className={`${classes.centerSection}`}>
             <div className={`${classes.aBox}`}>
