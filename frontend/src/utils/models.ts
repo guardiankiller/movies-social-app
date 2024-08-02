@@ -20,3 +20,22 @@ export interface ActuatorInfo {
     build: Build
     git: Git
 }
+
+export interface RegisterForm {
+    username: string
+    fullName: string
+    password: string
+    confirmPassword: string
+    email: string
+}
+
+export interface Violation {
+  property: string
+  message: string
+  type: string
+}
+
+export interface ViolationResponse {
+  message: string
+  errors: Violation[]
+}

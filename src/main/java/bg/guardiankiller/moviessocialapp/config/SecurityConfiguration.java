@@ -31,42 +31,42 @@ public class SecurityConfiguration {
                 .build();
     }
 
-    @Bean
-    @Order(2)
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
-                .authorizeHttpRequests(
-                        authorizeRequests ->
-                                authorizeRequests
-                                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                                        .requestMatchers("/", "/login", "/register", "/actuator/health", "/actuator/info").permitAll()
-                                        .anyRequest().authenticated()
-                )
-                .formLogin(formLogin ->
-                        formLogin
-                                .loginPage("/login")
-                                .loginProcessingUrl("/login")
-                                .usernameParameter("username")
-                                .passwordParameter("password")
-                                .defaultSuccessUrl("/register", true)
-                )
-                .logout(
-                        logout ->
-                                logout
-                                        .logoutUrl("/logout")
-                                        .logoutSuccessUrl("/")
-                                        .invalidateHttpSession(true)
-                )
-//                .rememberMe(
-//                        remember ->
-//                                remember
-//                                        .rememberMeParameter("remember")
-//                                        .key("remember Me Encryption Key")
-//                                        .rememberMeCookieName("rememberMeCookieName")
-//                                        .tokenValiditySeconds(10000)
+//    @Bean
+//    @Order(2)
+//    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+//        return httpSecurity
+//                .authorizeHttpRequests(
+//                        authorizeRequests ->
+//                                authorizeRequests
+//                                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+//                                        .requestMatchers("/", "/login", "/register", "/actuator/health", "/actuator/info").permitAll()
+//                                        .anyRequest().authenticated()
 //                )
-                .build();
-    }
+//                .formLogin(formLogin ->
+//                        formLogin
+//                                .loginPage("/login")
+//                                .loginProcessingUrl("/login")
+//                                .usernameParameter("username")
+//                                .passwordParameter("password")
+//                                .defaultSuccessUrl("/register", true)
+//                )
+//                .logout(
+//                        logout ->
+//                                logout
+//                                        .logoutUrl("/logout")
+//                                        .logoutSuccessUrl("/")
+//                                        .invalidateHttpSession(true)
+//                )
+////                .rememberMe(
+////                        remember ->
+////                                remember
+////                                        .rememberMeParameter("remember")
+////                                        .key("remember Me Encryption Key")
+////                                        .rememberMeCookieName("rememberMeCookieName")
+////                                        .tokenValiditySeconds(10000)
+////                )
+//                .build();
+//    }
 
     @Bean
     public UserDetailsServiceImpl userDetailsService(UserRepository userRepository) {
