@@ -7,7 +7,6 @@ import bg.guardiankiller.moviessocialapp.model.dto.AuthResponseDTO;
 import bg.guardiankiller.moviessocialapp.model.dto.UserDTO;
 import bg.guardiankiller.moviessocialapp.service.AuthenticationService;
 import bg.guardiankiller.moviessocialapp.service.UserService;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -63,14 +62,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void loginWithKey(String token) {
         try {
             var claims = JWTUtils.verify(token, keyEntry);
-            authenticate(getUsername(claims), claims.getIssuedAt());
+            authenticate(getUsername(claims));
         } catch (JWTInvalidClaimsException | JWTExpiredException | JWTInvalidSignatureException |
                  UsernameNotFoundException e) {
             throw new ServerException("Invalid JWT token", HttpStatus.UNAUTHORIZED);
         }
     }
 
-    private void authenticate(String username, LocalDateTime jwtCreationDate) {
+    private void authenticate(String username) {
         var user = userDetailsService.loadUserByUsername(username);
         var authToken = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(),
                 user.getAuthorities());

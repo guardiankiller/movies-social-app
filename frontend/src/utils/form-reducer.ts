@@ -1,4 +1,4 @@
-import React, { useReducer } from "react"
+import { useReducer } from "react"
 
 export class Action<T> {
     constructor(readonly type: keyof T, readonly input: string) { }
