@@ -39,3 +39,25 @@ export interface ViolationResponse {
   message: string
   errors: Violation[]
 }
+
+export interface AuthResponse {
+    accessToken: string
+    expirationTime: string
+    type: string
+}
+
+export interface UserInfo {
+    id: number,
+    username: string
+    fullName: string
+    email: string
+    roles: string[]
+}
+
+export class HttpError extends Error {
+    constructor(
+        private statusCode: number, 
+        private statusText: string, 
+        public message: string
+    ) { super() }
+}

@@ -90,6 +90,7 @@ function RegisterPage() {
   }
 
   useEffect(() => {
+    console.log("Test")
     const timer = setTimeout(async () => {
       const response = await validateRegister(form);
       if(response) {

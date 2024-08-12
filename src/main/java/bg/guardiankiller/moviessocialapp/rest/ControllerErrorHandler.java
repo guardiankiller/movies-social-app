@@ -1,5 +1,6 @@
 package bg.guardiankiller.moviessocialapp.rest;
 
+import bg.guardiankiller.moviessocialapp.exception.ServerException;
 import bg.guardiankiller.moviessocialapp.exception.ValidationException;
 import bg.guardiankiller.moviessocialapp.model.dto.ViolationResponseDTO;
 import bg.guardiankiller.moviessocialapp.model.dto.ViolationDTO;
@@ -18,5 +19,10 @@ public class ControllerErrorHandler {
         return ResponseEntity
                 .status(e.getStatus())
                 .body(result);
+    }
+
+    @ExceptionHandler(ServerException.class)
+    public ResponseEntity<ServerException> handleServerException(ServerException e) {
+        return ResponseEntity.status(e.getStatus()).body(e);
     }
 }

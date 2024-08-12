@@ -1,5 +1,6 @@
 package bg.guardiankiller.moviessocialapp.rest;
 
+import bg.guardiankiller.moviessocialapp.model.dto.UserDTO;
 import bg.guardiankiller.moviessocialapp.model.dto.UserRegisterRestDTO;
 import bg.guardiankiller.moviessocialapp.service.UserRestService;
 import org.springframework.http.HttpStatus;
@@ -28,5 +29,10 @@ public class UserRestController {
         } else {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }
+    }
+
+    @GetMapping("{username}")
+    public ResponseEntity<UserDTO> findByUsername(@PathVariable String username) {
+        return ResponseEntity.of(userRestService.findUserByUsername(username));
     }
 }

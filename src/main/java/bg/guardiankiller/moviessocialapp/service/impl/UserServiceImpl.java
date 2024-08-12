@@ -1,6 +1,7 @@
 package bg.guardiankiller.moviessocialapp.service.impl;
 
 import bg.guardiankiller.moviessocialapp.model.UserRoles;
+import bg.guardiankiller.moviessocialapp.model.dto.UserDTO;
 import bg.guardiankiller.moviessocialapp.model.dto.UserRegisterDTO;
 import bg.guardiankiller.moviessocialapp.model.entity.RoleEntity;
 import bg.guardiankiller.moviessocialapp.model.entity.UserEntity;
@@ -12,7 +13,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -37,4 +42,22 @@ public class UserServiceImpl implements UserService {
         userRepository.save(newUserEntity);
     }
 
+    @Override
+    public Optional<UserDTO> findUserByUsername(String username) {
+        return userRepository.findUserByUsername(username).map(this::toUserDTO);
+    }
+
+    @Override
+    public boolean authenticateUser(String username, String password) {
+        return userRepository
+                .findUserByUsername(username)
+                .map(user -> passwordEncoder.matches(password, user.getPassword()))
+                .orElse(false);
+    }
+
+    private UserDTO toUserDTO(UserEntity entity) {
+        var dto = mapper.map(entity, UserDTO.class);
+        dto.setRoles(entity.getRoles().stream().map(RoleEntity::getName).collect(Collectors.toSet()));
+        return dto;
+    }
 }
