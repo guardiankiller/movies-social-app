@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -44,5 +45,10 @@ public class GenreServiceImpl implements GenreService {
         return entities.stream()
                 .map(e->new Genre(e.getId(), names.get(e.getName())))
                 .toList();
+    }
+
+    @Override
+    public List<GenreEntity> getEntityByTMIDs(Collection<Long> tmIDs) {
+        return repository.getByTMDBids(tmIDs);
     }
 }
