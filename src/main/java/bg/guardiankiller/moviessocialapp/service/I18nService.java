@@ -3,6 +3,7 @@ package bg.guardiankiller.moviessocialapp.service;
 import bg.guardiankiller.moviessocialapp.model.dto.Language;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,6 +22,8 @@ public interface I18nService {
     default Optional<String> retrieve(UUID placeholder, Language lang) {
         return retrieve(placeholder).flatMap(map -> Optional.ofNullable(map.get(lang)));
     }
+
+    Map<UUID, String> retrieve(Collection<UUID> placeholder, Language lang);
 
     @Transactional
     default void updateString(UUID placeholder, Language lang, String value) {

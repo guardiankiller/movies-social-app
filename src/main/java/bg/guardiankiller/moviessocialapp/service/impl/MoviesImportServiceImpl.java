@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-record Genre(int id, String name){}
+record Genre(long id, String name){}
 record Genres(List<Genre> genres){}
 record Movie(
         long id,
@@ -114,6 +114,30 @@ public class MoviesImportServiceImpl implements MoviesImportService {
 
     private Flux<TMDBMovie> retrieveMoviesByIds(Flux<Long> ids) {
         return ids.delayElements(Duration.ofMillis(80)).flatMap(this::getMovieById);
+    }
+
+    @Override
+    public List<TMDBGenre> retrieveAllGenres() {
+        var langMap = Arrays
+                .stream(Language.values())
+                .collect(Collectors.toMap(v->v, this::retrieveGenres));
+
+        Map<Long, Map<Language, String>> map = new HashMap<>();
+        langMap.forEach((lang, entries) -> entries.forEach((id, genre) -> {
+            map.putIfAbsent(id, new HashMap<>());
+            map.get(id).put(lang, genre.name());
+        }));
+        return map.entrySet().stream()
+                .map(e-> new TMDBGenre(e.getKey(), e.getValue()))
+                .toList();
+    }
+
+    private Map<Long, Genre> retrieveGenres(Language lang) {
+        return this.getGenres(lang)
+                .collectList()
+                .block()
+                .stream()
+                .collect(Collectors.toMap(Genre::id, e->e));
     }
 
     @Override
@@ -277,8 +301,8 @@ public class MoviesImportServiceImpl implements MoviesImportService {
         );
     }
 
-    private Flux<Genre> getGenres() {
-        var request = apiClient.get().uri("/genre/movie/list");
+    private Flux<Genre> getGenres(Language language) {
+        var request = apiClient.get().uri("/genre/movie/list?language="+language.getCode());
         var response = request.retrieve();
         try {
             return response
@@ -287,6 +311,10 @@ public class MoviesImportServiceImpl implements MoviesImportService {
         } catch (WebClientException e) {
             throw new ServerException("Cannot connect to TMDB", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private Flux<Genre> getGenres() {
+        return getGenres(Language.EN);
     }
 
     private Mono<DataBuffer> getImageMono(String path) {

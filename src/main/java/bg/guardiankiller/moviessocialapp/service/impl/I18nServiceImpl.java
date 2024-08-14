@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -66,5 +67,14 @@ public class I18nServiceImpl implements I18nService {
     @Override
     public Optional<String> retrieve(UUID placeholder, Language lang) {
         return repository.getString(placeholder, lang);
+    }
+
+    @Override
+    public Map<UUID, String> retrieve(Collection<UUID> placeholders, Language lang) {
+        return repository
+                .getStrings(placeholders, lang)
+                .stream().collect(Collectors.toMap(
+                        I18nString::getPlaceholder, I18nString::getValue
+                ));
     }
 }
