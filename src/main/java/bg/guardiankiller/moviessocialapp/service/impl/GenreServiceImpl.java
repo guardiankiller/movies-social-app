@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -50,5 +52,16 @@ public class GenreServiceImpl implements GenreService {
     @Override
     public List<GenreEntity> getEntityByTMIDs(Collection<Long> tmIDs) {
         return repository.getByTMDBids(tmIDs);
+    }
+
+    @Override
+    public Optional<Genre> getSingleGenre(long id, Language lang) {
+        return repository.findById(id).map(e->new Genre(e.getId(), retrieve(e.getName(), lang)));
+    }
+
+    private String retrieve(UUID placeholder, Language language) {
+        return i18nService
+                .retrieve(placeholder, language)
+                .orElseGet(()->i18nService.retrieve(placeholder, Language.EN).orElse("N/A"));
     }
 }

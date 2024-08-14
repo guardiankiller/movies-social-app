@@ -9,17 +9,22 @@ import bg.guardiankiller.moviessocialapp.repository.MovieRepository;
 import bg.guardiankiller.moviessocialapp.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MovieServiceImpl implements MovieService {
 
     private final MoviesImportService moviesImportService;
@@ -57,9 +62,12 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Page<Movie> getAllMovies(Language language, Pageable pageable) {
         var entities = repository.getAllMovies(pageable);
+        return toMoviesDTO(language, entities);
+    }
+
+    private Page<Movie> toMoviesDTO(Language language, Page<MovieEntity> entities) {
         var genreMap = entities.stream()
                 .map(MovieEntity::getGenres)
                 .flatMap(Set::stream)
@@ -78,7 +86,7 @@ public class MovieServiceImpl implements MovieService {
                     entity.getGenres().stream()
                             .map(GenreEntity::getId)
                             .map(genreMap::get)
-                            .forEach(g->dto.getGenres().add(g));
+                            .forEach(g -> dto.getGenres().add(g));
                     dto.setTitle(retrieve(entity.getTitle(), language));
                     dto.setOverview(retrieve(entity.getOverview(), language));
                     dto.setImageURL(storageService.retrieveURL(retrieve(entity.getImagePath(), language)));
@@ -86,9 +94,23 @@ public class MovieServiceImpl implements MovieService {
                 });
     }
 
+    @Override
+    public Page<Movie> getMoviesByGenreId(long genreId, Language language, Pageable pageable) {
+        var entities = repository.getMoviesByGenreId(genreId, pageable);
+        return toMoviesDTO(language, entities);
+    }
+
+    @Override
+    public Optional<Movie> getSingleMovie(long id, Language language) {
+        return repository.findById(id)
+                .map(e->toMoviesDTO(language, new PageImpl<>(List.of(e), PageRequest.of(0, 1), 0)))
+                .flatMap(p->p.stream().findFirst());
+    }
+
     private String retrieve(UUID placeholder, Language language) {
         return i18nService
                 .retrieve(placeholder, language)
-                .orElseGet(()->i18nService.retrieve(placeholder, Language.EN).orElse("N/A"));
+                .filter(e->!e.isBlank())
+                .orElseGet(()->i18nService.retrieve(placeholder, Language.EN).filter(e->!e.isBlank()).orElse("N/A"));
     }
 }

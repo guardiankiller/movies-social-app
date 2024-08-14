@@ -7,6 +7,7 @@ import bg.guardiankiller.moviessocialapp.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,5 +29,13 @@ public class MovieController {
             @RequestParam(value = "limit", defaultValue = "30") int limit) {
         language = language == null ? Language.EN : language;
         return service.getAllMovies(language, PageRequest.of(page-1, limit));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Movie> getSingleMovie(
+            @PathVariable long id,
+            @RequestParam(value = "language", required = false) Language language) {
+        language = language == null ? Language.EN : language;
+        return ResponseEntity.of(service.getSingleMovie(id, language));
     }
 }
