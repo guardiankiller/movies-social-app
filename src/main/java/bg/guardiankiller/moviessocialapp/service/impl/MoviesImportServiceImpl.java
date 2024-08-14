@@ -1,6 +1,7 @@
 package bg.guardiankiller.moviessocialapp.service.impl;
 
 import bg.guardiankiller.moviessocialapp.exception.ServerException;
+import bg.guardiankiller.moviessocialapp.joinpoint.TrackExecutionTime;
 import bg.guardiankiller.moviessocialapp.model.dto.*;
 import bg.guardiankiller.moviessocialapp.service.MoviesImportService;
 import lombok.extern.slf4j.Slf4j;
@@ -113,11 +114,13 @@ public class MoviesImportServiceImpl implements MoviesImportService {
     }
 
     @Override
+    @TrackExecutionTime
     public List<Path> downloadImages(Path temp, String... paths) {
         return downloadImages(temp, Arrays.asList(paths));
     }
 
     @Override
+    @TrackExecutionTime
     public List<Path> downloadImages(Path temp, Collection<String> paths) {
         AtomicInteger count = new AtomicInteger();
         try {
@@ -142,6 +145,7 @@ public class MoviesImportServiceImpl implements MoviesImportService {
     }
 
     @Override
+    @TrackExecutionTime
     public Pair<List<TMDBMovie>, List<TMDBPerson>> importNMovies(int n) {
         var start = System.currentTimeMillis();
 
