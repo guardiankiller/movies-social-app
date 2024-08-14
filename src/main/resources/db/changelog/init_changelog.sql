@@ -71,3 +71,7 @@ create table movies_genres (
     foreign key (movie_id) references movies(id) on delete cascade,
     foreign key (genre_id) references genres(id) on delete cascade
 );
+
+-- changeset guardiankiller:5
+-- Added movies image column
+alter table movies add column image_path binary(16) not null;

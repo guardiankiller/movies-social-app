@@ -35,9 +35,14 @@ public class MovieEntity {
     @Column(name = "release_date", nullable = false)
     private LocalDate releaseDate;
 
+    @Column(nullable = false)
     private UUID title;
 
+    @Column(nullable = false)
     private UUID overview;
+
+    @Column(name = "image_path", nullable = false)
+    private UUID imagePath;
 
     @ManyToMany
     @JoinTable(

@@ -272,7 +272,11 @@ public class MoviesImportServiceImpl implements MoviesImportService {
                     var title = details.entrySet().stream()
                             .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().title()));
                     var image = details.entrySet().stream()
-                            .collect(Collectors.toMap(Map.Entry::getKey, entry -> Optional.ofNullable(entry.getValue().poster_path()).orElse("None")));
+                            .collect(Collectors.toMap(Map.Entry::getKey,
+                                    entry -> Optional
+                                            .ofNullable(entry.getValue().poster_path())
+                                            .map(p->p.replace("/", ""))
+                                            .orElse("None")));
 
                     var crew = credits.crew().stream()
                             .map(x -> new CrewPerson(x.id(), x.department(), x.job()))

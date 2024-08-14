@@ -19,6 +19,8 @@ public class Movie {
     private long voteCount;
     private LocalDate releaseDate;
 
+    private String imageURL;
+
     private String title;
 
     private String overview;

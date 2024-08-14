@@ -6,12 +6,8 @@ import bg.guardiankiller.moviessocialapp.model.dto.Movie;
 import bg.guardiankiller.moviessocialapp.model.entity.GenreEntity;
 import bg.guardiankiller.moviessocialapp.model.entity.MovieEntity;
 import bg.guardiankiller.moviessocialapp.repository.MovieRepository;
-import bg.guardiankiller.moviessocialapp.service.GenreService;
-import bg.guardiankiller.moviessocialapp.service.I18nService;
-import bg.guardiankiller.moviessocialapp.service.MovieService;
-import bg.guardiankiller.moviessocialapp.service.MoviesImportService;
+import bg.guardiankiller.moviessocialapp.service.*;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,7 +26,7 @@ public class MovieServiceImpl implements MovieService {
     private final GenreService genreService;
     private final I18nService i18nService;
     private final MovieRepository repository;
-    private final ModelMapper mapper;
+    private final StorageService storageService;
 
     @Override
     @Transactional
@@ -39,6 +35,8 @@ public class MovieServiceImpl implements MovieService {
         var genreIds = imported.stream().flatMap(m->m.genres().stream()).distinct().toList();
         var genres = genreService.getEntityByTMIDs(genreIds).stream()
                 .collect(Collectors.toMap(GenreEntity::getTmdbId, e->e));
+        var pictures = imported.stream().flatMap(m->m.poster_path().values().stream()).toList();
+        storageService.downloadFromTMDB(pictures);
 
         var entites = imported.stream().map(movie -> {
             var entity = new MovieEntity();
@@ -47,6 +45,7 @@ public class MovieServiceImpl implements MovieService {
 
             entity.setTitle(i18nService.addString(movie.title()));
             entity.setOverview(i18nService.addString(movie.overview()));
+            entity.setImagePath(i18nService.addString(movie.poster_path()));
 
             entity.setPopularity(movie.popularity());
             entity.setReleaseDate(releaseDate);
@@ -82,6 +81,7 @@ public class MovieServiceImpl implements MovieService {
                             .forEach(g->dto.getGenres().add(g));
                     dto.setTitle(retrieve(entity.getTitle(), language));
                     dto.setOverview(retrieve(entity.getOverview(), language));
+                    dto.setImageURL(storageService.retrieveURL(retrieve(entity.getImagePath(), language)));
                     return dto;
                 });
     }
