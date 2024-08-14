@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
@@ -113,10 +112,59 @@ public class MoviesImportServiceImpl implements MoviesImportService {
         this.imageClient = imageClient;
     }
 
+    private Flux<TMDBMovie> retrieveMoviesByIds(Flux<Long> ids) {
+        return ids.delayElements(Duration.ofMillis(80)).flatMap(this::getMovieById);
+    }
+
     @Override
     @TrackExecutionTime
-    public List<Path> downloadImages(Path temp, String... paths) {
-        return downloadImages(temp, Arrays.asList(paths));
+    public List<TMDBPerson> retrievePeopleFromMovies(Collection<TMDBMovie> movies) {
+        var peopleIds = movies.stream().flatMap(x -> Stream.concat(
+                x.cast().stream().map(CastPerson::id),
+                x.crew().stream().map(CrewPerson::id)
+        )).collect(Collectors.toSet());
+        log.info("Found {} people", peopleIds.size());
+        return retrievePeopleByIds(peopleIds);
+    }
+
+    @Override
+    @TrackExecutionTime
+    public List<TMDBPerson> retrievePeopleByIds(Collection<Long> ids) {
+        return Flux
+                .fromIterable(ids)
+                .delayElements(Duration.ofMillis(60))
+                .flatMap(this::getPerson)
+                .collectList()
+                .block();
+    }
+
+    @Override
+    public TMDBPerson retrievePersonById(long id) {
+        return getPerson(id).block();
+    }
+
+    @Override
+    public List<TMDBMovie> retrieveNMoviesFromEachGenre(int n) {
+        return getGenres()
+                .flatMap(genre -> getMovieIds(genre, n))
+                .transform(this::retrieveMoviesByIds)
+                .collectList()
+                .block();
+    }
+
+    @Override
+    @TrackExecutionTime
+    public List<TMDBMovie> retrieveMovies(Collection<Long> ids) {
+        return Flux
+                .fromIterable(ids)
+                .transform(this::retrieveMoviesByIds)
+                .collectList()
+                .block();
+    }
+
+    @Override
+    public TMDBMovie retrieveMovie(long id) {
+        return getMovieById(id).block();
     }
 
     @Override
@@ -147,29 +195,10 @@ public class MoviesImportServiceImpl implements MoviesImportService {
     @Override
     @TrackExecutionTime
     public Pair<List<TMDBMovie>, List<TMDBPerson>> importNMovies(int n) {
-        var start = System.currentTimeMillis();
-
-        var set = Flux
-                .fromIterable(getGenres().genres())
-                .flatMap(genre -> getMovieIds(genre, n))
-                .delayElements(Duration.ofMillis(80))
-                .flatMap(this::getMovieById)
-                .collectList()
-                .block();
+        var set = retrieveNMoviesFromEachGenre(n);
         log.info("Found {} movies", set.size());
-        var peopleIds = set.stream().flatMap(x -> Stream.concat(
-                x.cast().stream().map(CastPerson::id),
-                x.crew().stream().map(CrewPerson::id)
-        )).collect(Collectors.toSet());
-        log.info("Found {} people", peopleIds.size());
-        var people = Flux
-                .fromIterable(peopleIds)
-                .delayElements(Duration.ofMillis(60))
-                .flatMap(this::getPerson)
-                .collectSortedList(Comparator.comparingLong(Record::hashCode))
-                .block();
 
-        log.info("Took: {}s", (System.currentTimeMillis() - start)/1000);
+        var people = retrievePeopleFromMovies(set);
         return new Pair<>(set, people);
     }
 
@@ -248,11 +277,13 @@ public class MoviesImportServiceImpl implements MoviesImportService {
         );
     }
 
-    private Genres getGenres() {
+    private Flux<Genre> getGenres() {
         var request = apiClient.get().uri("/genre/movie/list");
         var response = request.retrieve();
         try {
-            return response.bodyToMono(Genres.class).block();
+            return response
+                    .bodyToMono(Genres.class)
+                    .flatMapMany(x->Flux.fromIterable(x.genres()));
         } catch (WebClientException e) {
             throw new ServerException("Cannot connect to TMDB", HttpStatus.INTERNAL_SERVER_ERROR);
         }
