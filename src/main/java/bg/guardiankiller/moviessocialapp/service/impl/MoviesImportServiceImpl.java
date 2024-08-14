@@ -5,15 +5,20 @@ import bg.guardiankiller.moviessocialapp.model.dto.*;
 import bg.guardiankiller.moviessocialapp.service.MoviesImportService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -97,10 +102,43 @@ record Person(
 @Slf4j
 public class MoviesImportServiceImpl implements MoviesImportService {
 
-    private final WebClient webClient;
+    private final WebClient apiClient;
+    private final WebClient imageClient;
 
-    public MoviesImportServiceImpl(@Qualifier("tmdbWebClient") WebClient webClient) {
-        this.webClient = webClient;
+    public MoviesImportServiceImpl(
+            @Qualifier("tmdbWebClient") WebClient apiClient,
+            @Qualifier("tmdbImagesWebClient") WebClient imageClient) {
+        this.apiClient = apiClient;
+        this.imageClient = imageClient;
+    }
+
+    @Override
+    public List<Path> downloadImages(Path temp, String... paths) {
+        return downloadImages(temp, Arrays.asList(paths));
+    }
+
+    @Override
+    public List<Path> downloadImages(Path temp, Collection<String> paths) {
+        AtomicInteger count = new AtomicInteger();
+        try {
+            return Flux.fromIterable(paths)
+                    .flatMap(path -> {
+                        var dest =  temp.resolve(path.replace("/", ""));
+                        return this.getImageMono(path)
+                                .flatMap(body->DataBufferUtils.write(Mono.just(body), dest)
+                                        .map(x->dest));
+                    })
+                    .onErrorContinue((error, value)-> {
+                        count.incrementAndGet();
+                        System.out.println(error.getLocalizedMessage());
+                    })
+                    .delayElements(Duration.ofMillis(100))
+                    .collectList()
+                    .block();
+
+        }finally {
+            log.warn("Error in {}/{}", count.get(), paths.size());
+        }
     }
 
     @Override
@@ -114,12 +152,12 @@ public class MoviesImportServiceImpl implements MoviesImportService {
                 .flatMap(this::getMovieById)
                 .collectList()
                 .block();
-
+        log.info("Found {} movies", set.size());
         var peopleIds = set.stream().flatMap(x -> Stream.concat(
                 x.cast().stream().map(CastPerson::id),
                 x.crew().stream().map(CrewPerson::id)
         )).collect(Collectors.toSet());
-
+        log.info("Found {} people", peopleIds.size());
         var people = Flux
                 .fromIterable(peopleIds)
                 .delayElements(Duration.ofMillis(60))
@@ -148,7 +186,7 @@ public class MoviesImportServiceImpl implements MoviesImportService {
     }
 
     private Mono<Person> getPersonByIdMono(long id, String lang) {
-        var request = webClient.get()
+        var request = apiClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/person/{id}")
                         .queryParam("language", lang)
@@ -207,7 +245,7 @@ public class MoviesImportServiceImpl implements MoviesImportService {
     }
 
     private Genres getGenres() {
-        var request = webClient.get().uri("/genre/movie/list");
+        var request = apiClient.get().uri("/genre/movie/list");
         var response = request.retrieve();
         try {
             return response.bodyToMono(Genres.class).block();
@@ -216,8 +254,19 @@ public class MoviesImportServiceImpl implements MoviesImportService {
         }
     }
 
+    private Mono<DataBuffer> getImageMono(String path) {
+        var request = imageClient.get().uri(path);
+        var response = request.retrieve();
+        try {
+            return response
+                    .bodyToMono(DataBuffer.class);
+        } catch (WebClientException e) {
+            throw new ServerException("Cannot connect to TMDB", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     private Mono<MovieDetails> getMovieById(long id, Language lang) {
-        var request = webClient.get()
+        var request = apiClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/movie/{id}")
                         .queryParam("language", lang.getCode())
@@ -232,7 +281,7 @@ public class MoviesImportServiceImpl implements MoviesImportService {
     }
 
     private Mono<MovieCredits> getMovieCredits(long id, String lang) {
-        var request = webClient.get()
+        var request = apiClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/movie/{id}/credits")
                         .queryParam("language", lang)
@@ -259,7 +308,7 @@ public class MoviesImportServiceImpl implements MoviesImportService {
     }
 
     private Mono<MoviesPage> getMoviesPageByGenre(Genre genre, int page) {
-        var request = webClient.get()
+        var request = apiClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/discover/movie")
                         .queryParam("page", page)

@@ -29,4 +29,17 @@ public class RestClientConfiguration {
                 .exchangeStrategies(strategies)
                 .build();
     }
+
+    @Bean
+    public WebClient tmdbImagesWebClient() {
+        final int size = 64 * 1024 * 1024;
+        final ExchangeStrategies strategies = ExchangeStrategies.builder()
+                .codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(size))
+                .build();
+        return WebClient.builder()
+                .baseUrl("https://image.tmdb.org/t/p/w500/")
+                .defaultHeader("Authorization", "Bearer " + ACCESS_TOKEN)
+                .exchangeStrategies(strategies)
+                .build();
+    }
 }
