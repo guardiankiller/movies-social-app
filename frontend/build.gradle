@@ -23,4 +23,22 @@ set PATH=${inputs.files.singleFile};%PATH%
     }
 }
 
+tasks.register('viteDev', NpxTask) {
+    dependsOn npmInstall
+    command = 'vite'
+}
+
+var tsCheck = tasks.register('tsCheck', NpxTask) {
+    dependsOn npmInstall
+    command = 'tsc'
+    args = ['-b']
+}
+
+tasks.register('viteBuild', NpxTask) {
+    dependsOn tsCheck
+    dependsOn npmInstall
+    command = 'vite'
+    args = ['build']
+}
+
 tasks.named('npmSetup').get().dependsOn(task.get())
