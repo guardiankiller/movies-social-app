@@ -20,6 +20,17 @@ export function MovieDetails() {
         .then(x => setMovie(x))
     }, [lang.selected])
 
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+
+    function showDate(movie: Movie | undefined) {
+        if(!movie) {
+            return "January 1, 2024"
+        }
+        return new Date(movie.releaseDate[0], movie.releaseDate[1] - 1, movie.releaseDate[2])
+        .toLocaleDateString(lang.selected == "BG" ? "BG" : "en-US", options as any)
+    }
+
+
     return (
         <main>
         <section className="movie-details container">
@@ -28,7 +39,7 @@ export function MovieDetails() {
                 <img src={movie?.imageURL} alt="Movie Details"/>
                 <div className="details">
                     <p><strong>Genre:</strong> {genres()}</p>
-                    <p><strong>Release Date:</strong> January 1, 2024</p>
+                    <p><strong>Release Date:</strong> {showDate(movie)}</p>
                     <p><strong>Director:</strong> John Doe</p>
                     <p><strong>Cast:</strong> Actor A, Actor B, Actor C</p>
                     <p><strong>Synopsis:</strong> {movie?.overview}</p>

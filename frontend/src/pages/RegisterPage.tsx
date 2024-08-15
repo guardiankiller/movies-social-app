@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import createFormReducer from '../utils/form-reducer'
 import { type RegisterForm } from '../utils/models'
 import { submitRegister, validateRegister } from '../utils/api-functions'
-import { Alert, CloseButton } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 
 interface FormFieldProps {
   displayName: string
@@ -36,32 +36,7 @@ function FormField(props: FormFieldProps) {
       placeholder={props.placeholder ?? ''}
       aria-required="true"
       required/>
-      {dirty && props.error ? <p className={`${classes.errorLabel}`}>{props.error}</p> : null}
-    </>
-  )
-}
-
-interface ToastProps {
-  variant: 'danger' | 'success'
-  message?: string
-  id: number
-}
-
-function Toast(props: ToastProps) {
-  const [show, setShow] = useState(false)
-
-  useEffect(() => {
-    if(props.message) {
-      setShow(true)
-      setTimeout(()=> setShow(false), 3000)
-    }
-  }, [props.message, props.id]);
-
-  return(
-    <>
-        {show ? <Alert variant='danger' style={{width: 'fit-content', margin: '1em auto', display: 'flex', gap: '10px'}}>
-        <span>{props.message}</span> <CloseButton onClick={_ => setShow(false)}/>
-        </Alert>: null}
+      {dirty && props.error ? <p style={{color: 'red'}}>{props.error}</p> : null}
     </>
   )
 }
@@ -78,6 +53,8 @@ function RegisterPage() {
   const [error, setError] = useState({msg: '', id: 0})
 
   const [success, setSuccess] = useState({msg: '', id:0})
+
+  const navigate = useNavigate()
 
   function showError(msg: string) {
     setError({msg, id: error.id++})
@@ -115,6 +92,7 @@ function RegisterPage() {
     } else {
       console.log("Success")
       showSuccess("OK")
+      navigate("/login")
     }
   }
 

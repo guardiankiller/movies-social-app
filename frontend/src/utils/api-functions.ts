@@ -1,4 +1,4 @@
-import { ActuatorInfo, AuthResponse, HttpError, Movie, Page, RegisterForm, Settings, UserInfo, ViolationResponse } from "./models";
+import { ActuatorInfo, AuthResponse, Genre, HttpError, Movie, Page, RegisterForm, Settings, UserInfo, ViolationResponse } from "./models";
 
 import axios, { AxiosError } from "axios";
 
@@ -14,12 +14,11 @@ export async function getServerInfo(): Promise<ActuatorInfo> {
 }
 
 
-export async function validateRegister(form: RegisterForm) {
+export async function validateRegister(form: RegisterForm): Promise<ViolationResponse | undefined> {
     try {
       const response = await axios.post<ViolationResponse>('/api/users', form, { params: {dryRun: true}})
-    console.log(response)
     if(response.status === 200) {
-      return null;
+      return undefined;
     } else {
       return response.data
     }
@@ -73,9 +72,41 @@ export async function submitRegister(form: RegisterForm) {
     }
   }
 
+  export async function getGenres(language: string): Promise<Genre[]> {
+    try {
+      const response = await axios.get<Genre[]>('/api/genres', {params: {language}})
+      return response.data
+    } catch(error) {
+      const ex = error as AxiosError
+      if(ex.response) {
+        const e = ex.response?.data as any
+        throw new HttpError(ex.response.status, 
+          ex.response.statusText || "Server Exception", 
+          e.message || "Error")
+      }
+      throw new HttpError(500, "Sever error", "Cannot retrive response from server")
+    }
+  }
+
   export async function getMovies(language: string, page: number): Promise<Page<Movie>> {
     try {
       const response = await axios.get<Page<Movie>>('/api/movies', {params: {language, page}})
+      return response.data
+    } catch(error) {
+      const ex = error as AxiosError
+      if(ex.response) {
+        const e = ex.response?.data as any
+        throw new HttpError(ex.response.status, 
+          ex.response.statusText || "Server Exception", 
+          e.message || "Error")
+      }
+      throw new HttpError(500, "Sever error", "Cannot retrive response from server")
+    }
+  }
+
+  export async function getMoviesByGenre(genreId: number, language: string, page: number): Promise<Page<Movie>> {
+    try {
+      const response = await axios.get<Page<Movie>>(`/api/genres/${genreId}/movies`, {params: {language, page}})
       console.log(response)
       return response.data
     } catch(error) {
@@ -93,6 +124,22 @@ export async function submitRegister(form: RegisterForm) {
   export async function getMovie(id: number, language: string): Promise<Movie> {
     try {
       const response = await axios.get<Movie>('/api/movies/'+id, {params: {language}})
+      return response.data
+    } catch(error) {
+      const ex = error as AxiosError
+      if(ex.response) {
+        const e = ex.response?.data as any
+        throw new HttpError(ex.response.status, 
+          ex.response.statusText || "Server Exception", 
+          e.message || "Error")
+      }
+      throw new HttpError(500, "Sever error", "Cannot retrive response from server")
+    }
+  }
+
+  export async function getGenre(id: number, language: string): Promise<Genre> {
+    try {
+      const response = await axios.get<Genre>('/api/genres/'+id, {params: {language}})
       return response.data
     } catch(error) {
       const ex = error as AxiosError
