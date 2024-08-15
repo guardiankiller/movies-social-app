@@ -1,10 +1,8 @@
-import { Link } from 'react-router-dom'
-import logo from '../../assets/logo-just-watch-together.png'
-import classes from './RegisterPage.module.css'
+
 import { useEffect, useState } from 'react'
-import createFormReducer from '../../utils/form-reducer'
-import { type RegisterForm } from '../../utils/models'
-import { submitRegister, validateRegister } from '../../utils/api-functions'
+import createFormReducer from '../utils/form-reducer'
+import { type RegisterForm } from '../utils/models'
+import { submitRegister, validateRegister } from '../utils/api-functions'
 import { Alert, CloseButton } from 'react-bootstrap'
 
 interface FormFieldProps {
@@ -27,19 +25,19 @@ function FormField(props: FormFieldProps) {
   }
 
   return (
-    <div className={`${classes.aSpacingBase}`}>
-    <label htmlFor={props.id} className={`${classes.regLabel}`}>{props.displayName}</label>
+    <>
+    <label htmlFor={props.id}>{props.displayName}:</label>
     <input 
       type={props.type ?? 'text'}
-      id={props.id}
-      className={`${classes.aInputText} ${classes.aSpan12}`}
+      id={props.id} 
       value={props.value}
       onChange={e => props.setValue(e.target.value)}
       onBlur={ _ => updateDirty(true) }
       placeholder={props.placeholder ?? ''}
-      aria-required="true" />
+      aria-required="true"
+      required/>
       {dirty && props.error ? <p className={`${classes.errorLabel}`}>{props.error}</p> : null}
-  </div>
+    </>
   )
 }
 
@@ -121,25 +119,14 @@ function RegisterPage() {
   }
 
   return (
-    <div>
-      <header className={`${classes.siteHeader} ${classes.textAlign}`}>
-        <a className={`${classes.linkNavIcon}`} href="#">
-          <img className={`${classes.image} ${classes.imageSizeReg}`} src={logo} alt="logo" />
-        </a>
-      </header>
-      <main className={`${classes.siteContent}`}>
-        <Toast variant='danger' message={error.msg} id={error.id}/>
-        <Toast variant='success' message={success.msg} id={success.id}/> 
-        <form action="" onSubmit={onSubmit}>
-          <div className={`${classes.centerSection}`}>
-            <div className={`${classes.aBox}`}>
-              <div className={`${classes.aBoxInner}`}>
-                <h1 className={`${classes.h1Margin} ${classes.width}`}>Create account</h1>
+    <>
+      <main>
+        <section className="form-section container">
+            <h2>Register</h2>
+            <form onSubmit={onSubmit}>
                 <FormField
-                  displayName='Username'
-                  id='username'
-                  value={form.username}
-                  setValue={e => dispatch('username', e)}
+                  displayName='Username' id='username'
+                  value={form.username} setValue={e => dispatch('username', e)}
                   error={errors.username}
                 />
                 <FormField
@@ -177,25 +164,11 @@ function RegisterPage() {
                   type='password'
                   error={errors.confirmPassword}
                 />
-                <div className={`${classes.aSpacingExtraLarge}`}>
-                  <span className={`${classes.aButton} ${classes.aButtonSpan12} ${classes.aButtonPrimary}`}>
-                    <button className={`${classes.aButtonInner} ${classes.aButtonText} ${classes.textColor}`} type="submit">Create your JUST account</button>
-                  </span>
-                </div>
-
-                <div className={`${classes.aDividerInner}`}></div>
-                <div className={`${classes.aRow}`}>Already have an account?
-                  <Link to="/login" className={`${classes.aLinkEmphasis}`}> Sign in</Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
+                <button type="submit">Register</button>
+            </form>
+        </section>
       </main>
-      <footer className={`${classes.siteFooter}`}>
-
-      </footer>
-    </div>
+    </>
   )
 }
 

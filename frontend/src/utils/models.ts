@@ -61,3 +61,44 @@ export class HttpError extends Error {
         public message: string
     ) { super() }
 }
+
+export interface AccessToken {
+    exp: number
+    fullName: string
+    iat: number
+    iss: string
+    sub: string
+    username: string
+}
+
+export interface Page<T> {
+    content: T[]
+    totalPages: number
+    totalElements: number
+    numberOfElements: number
+    size: number
+    number: number
+    first: boolean
+    last: boolean
+}
+
+export interface Genre {
+    id: number
+    name: string
+}
+
+export interface Movie {
+    id: number
+    popularity: number
+    voteAverage: number
+    voteCount: number
+    releaseDate: number[]
+    imageURL: string
+    title: string
+    overview: string
+    genres: Genre[]
+}
+
+export interface Settings {
+    loading: boolean
+}

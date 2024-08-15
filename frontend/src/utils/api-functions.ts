@@ -1,4 +1,4 @@
-import { ActuatorInfo, AuthResponse, HttpError, RegisterForm, UserInfo, ViolationResponse } from "./models";
+import { ActuatorInfo, AuthResponse, HttpError, Movie, Page, RegisterForm, Settings, UserInfo, ViolationResponse } from "./models";
 
 import axios, { AxiosError } from "axios";
 
@@ -72,3 +72,68 @@ export async function submitRegister(form: RegisterForm) {
       throw new HttpError(500, "Sever error", "Cannot retrive response from server")
     }
   }
+
+  export async function getMovies(language: string, page: number): Promise<Page<Movie>> {
+    try {
+      const response = await axios.get<Page<Movie>>('/api/movies', {params: {language, page}})
+      console.log(response)
+      return response.data
+    } catch(error) {
+      const ex = error as AxiosError
+      if(ex.response) {
+        const e = ex.response?.data as any
+        throw new HttpError(ex.response.status, 
+          ex.response.statusText || "Server Exception", 
+          e.message || "Error")
+      }
+      throw new HttpError(500, "Sever error", "Cannot retrive response from server")
+    }
+  }
+
+  export async function getMovie(id: number, language: string): Promise<Movie> {
+    try {
+      const response = await axios.get<Movie>('/api/movies/'+id, {params: {language}})
+      return response.data
+    } catch(error) {
+      const ex = error as AxiosError
+      if(ex.response) {
+        const e = ex.response?.data as any
+        throw new HttpError(ex.response.status, 
+          ex.response.statusText || "Server Exception", 
+          e.message || "Error")
+      }
+      throw new HttpError(500, "Sever error", "Cannot retrive response from server")
+    }
+  }
+
+    export async function getLanguages(): Promise<string[]> {
+      try {
+        const response = await axios.get<string[]>('/api/languages')
+        return response.data
+      } catch(error) {
+        const ex = error as AxiosError
+        if(ex.response) {
+          const e = ex.response?.data as any
+          throw new HttpError(ex.response.status, 
+            ex.response.statusText || "Server Exception", 
+            e.message || "Error")
+        }
+        throw new HttpError(500, "Sever error", "Cannot retrive response from server")
+      }
+    }
+
+    export async function getSettings(): Promise<Settings> {
+      try {
+        const response = await axios.get<Settings>('/api/settings')
+        return response.data
+      } catch(error) {
+        const ex = error as AxiosError
+        if(ex.response) {
+          const e = ex.response?.data as any
+          throw new HttpError(ex.response.status, 
+            ex.response.statusText || "Server Exception", 
+            e.message || "Error")
+        }
+        throw new HttpError(500, "Sever error", "Cannot retrive response from server")
+      }
+    }

@@ -36,9 +36,10 @@ public class SecurityConfiguration {
                 .securityMatcher("/api/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests.requestMatchers( HttpMethod.POST, "/api/users", "/api/auth").permitAll()
-                                .anyRequest().authenticated())
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        .requestMatchers( HttpMethod.POST, "/api/users", "/api/auth").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/languages", "/api/settings").permitAll()
+                        .anyRequest().authenticated())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(AbstractHttpConfigurer::disable)

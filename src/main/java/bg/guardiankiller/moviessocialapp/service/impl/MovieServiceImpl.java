@@ -7,6 +7,7 @@ import bg.guardiankiller.moviessocialapp.model.entity.GenreEntity;
 import bg.guardiankiller.moviessocialapp.model.entity.MovieEntity;
 import bg.guardiankiller.moviessocialapp.repository.MovieRepository;
 import bg.guardiankiller.moviessocialapp.service.*;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -32,6 +33,18 @@ public class MovieServiceImpl implements MovieService {
     private final I18nService i18nService;
     private final MovieRepository repository;
     private final StorageService storageService;
+    private boolean loading = false;
+
+    @PostConstruct
+    @Transactional
+    public void init() {
+        if(repository.count() == 0) {
+            loading = true;
+            genreService.init();
+            importMovies(2);
+            loading = false;
+        }
+    }
 
     @Override
     @Transactional
@@ -112,5 +125,9 @@ public class MovieServiceImpl implements MovieService {
                 .retrieve(placeholder, language)
                 .filter(e->!e.isBlank())
                 .orElseGet(()->i18nService.retrieve(placeholder, Language.EN).filter(e->!e.isBlank()).orElse("N/A"));
+    }
+
+    public boolean isLoading() {
+        return loading;
     }
 }

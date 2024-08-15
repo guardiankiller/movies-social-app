@@ -17,4 +17,6 @@ public interface MovieService {
     Page<Movie> getMoviesByGenreId(long genreId, Language language, Pageable pageable);
 
     Optional<Movie> getSingleMovie(long id, Language language);
+
+    boolean isLoading();
 }
