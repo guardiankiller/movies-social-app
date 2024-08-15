@@ -1,10 +1,18 @@
 import './App.css'
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
-import RegisterPage from './pages/register-page/RegisterPage'
-import LoginPage from './pages/login-page/LoginPage'
+import RegisterPage from './pages/RegisterPage'
+import LoginPage from './pages/LoginPage'
 import { AuthProvider } from './utils/AuthProvider'
-import { UserPage } from './pages/user-page/UserPage'
+import { UserPage } from './pages/UserPage'
 import { Snackbar } from './utils/Snackbar'
+import { Footer } from './layouts/Footer'
+import { Header } from './layouts/Header'
+import { AboutUs } from './pages/AboutUs'
+import { ContactUs } from './pages/ContectUs'
+import { MovieDetails } from './pages/MovieDetails'
+import { LanguageProvider } from './utils/LanguageProvider'
+import { LoadingPage } from './pages/LoadingPage'
+import { FAQ } from './pages/FAQ'
 
 const router = createBrowserRouter([
   {
@@ -21,11 +29,23 @@ const router = createBrowserRouter([
       },
       {
         path: '/',
-        element: <LoginPage />
+        element: <UserPage />
       },
       {
-        path: '/users/:username',
-        element: <UserPage />
+        path: '/about',
+        element: <AboutUs />
+      },
+      {
+        path: '/contact',
+        element: <ContactUs />
+      },
+      {
+        path: '/faq',
+        element: <FAQ />
+      },
+      {
+        path: '/movies/:id',
+        element: <MovieDetails />
       }
     ]
   }
@@ -35,7 +55,13 @@ function Main() {
   return (
       <Snackbar>
         <AuthProvider>
-          <Outlet/>
+          <LanguageProvider>
+            <LoadingPage>
+              <Header/>
+              <Outlet/>
+              <Footer/>
+            </LoadingPage>
+          </LanguageProvider>
         </AuthProvider>
       </Snackbar>
   )

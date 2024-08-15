@@ -36,3 +36,5 @@ logging:
     org:
       springframework:
         security: DEBUG
+
+tmdb.api.key: ${tmdb_api_key}

@@ -25,10 +25,10 @@ public class MovieController {
     @GetMapping
     public Page<Movie> getAllMovies(
             @RequestParam(value = "language", required = false) Language language,
-            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "limit", defaultValue = "30") int limit) {
         language = language == null ? Language.EN : language;
-        return service.getAllMovies(language, PageRequest.of(page-1, limit));
+        return service.getAllMovies(language, PageRequest.of(page, limit));
     }
 
     @GetMapping("/{id}")

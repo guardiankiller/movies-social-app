@@ -44,7 +44,7 @@ public class MovieEntity {
     @Column(name = "image_path", nullable = false)
     private UUID imagePath;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "movies_genres",
             joinColumns = @JoinColumn(name = "movie_id"),
@@ -53,7 +53,6 @@ public class MovieEntity {
 
     public void addGenre(GenreEntity genre) {
         getGenres().add(genre);
-        genre.getMovies().add(this);
     }
 
 /*

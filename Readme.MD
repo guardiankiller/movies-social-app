@@ -6,6 +6,7 @@
 - MySQL database server with movies-social-app empty database
 
 ### Setup
+- Generate an API key from TMDB (Create an account then go to Settings > API and copy the 'API Read Access Token')
 - Make sure you have the correct JAVA_HOME and java.exe on the PATH
 - Start the backend server
 ```dtd

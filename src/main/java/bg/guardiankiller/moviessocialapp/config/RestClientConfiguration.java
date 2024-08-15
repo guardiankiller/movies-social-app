@@ -1,5 +1,6 @@
 package bg.guardiankiller.moviessocialapp.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -9,7 +10,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class RestClientConfiguration {
 
-    private static final String ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1NGNlMjM1YTE3NTQwMGM5ZDQzMWIwY2MyYWQzYTgxZiIsIm5iZiI6MTcyMzQ4NDk2MC45Mzc3NDcsInN1YiI6IjY2OWQxNmU4Mzk0ZDFjOTUyYjhlY2I5YyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.G_xbiBhgiwxw4PbhUk3jHGypo8v72iAueblRJbvpPvI";
+    @Value("${tmdb.api.key}")
+    private String ACCESS_TOKEN = "";
 
     @Bean
     @Primary

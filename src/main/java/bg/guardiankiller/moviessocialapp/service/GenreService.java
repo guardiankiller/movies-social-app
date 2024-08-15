@@ -10,6 +10,8 @@ import java.util.Optional;
 
 public interface GenreService {
 
+    void init();
+
     List<Genre> getAllGenres(Language lang);
 
     List<GenreEntity> getEntityByTMIDs(Collection<Long> tmIDs);

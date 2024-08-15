@@ -1,14 +1,16 @@
 import React, { ReactNode, useContext, useEffect, useState } from "react";
-import { AuthResponse } from "./models";
+import { AccessToken, AuthResponse } from "./models";
 import { generateToken } from "./api-functions";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "./Snackbar";
 import axios, { AxiosError } from "axios";
+import { jwtDecode } from 'jwt-decode';
 
 export interface AuthContext {
     login: (username: string, password: string) => void
     logout: () => void
     isLoggedIn: () => boolean
+    accessToken: () => AccessToken
 }
 
 const Ctx = React.createContext({} as AuthContext)
@@ -17,7 +19,6 @@ export function useAuthGuard() {
     const auth = useAuth()
     const nav = useNavigate()
     useEffect(() => {
-        console.log(auth.isLoggedIn())
         if(!auth.isLoggedIn()) {
             nav('/login')
         }
@@ -73,7 +74,7 @@ export function AuthProvider({ children }: Props) {
             setAuth(response)
             localStorage.setItem('auth', JSON.stringify(response))
             snackbar.show("Successful login")
-            setTimeout(() => nav(`/users/${username}`))
+            setTimeout(() => nav(`/`))
         } catch(e) {
             const ex = e as Error
             snackbar.showError(ex.message)
@@ -90,10 +91,15 @@ export function AuthProvider({ children }: Props) {
         return !!response
     }
 
+    function accessToken() {
+        return jwtDecode(response?.accessToken as string) as AccessToken
+    }
+
     const value: AuthContext = {
         login, 
         logout, 
-        isLoggedIn
+        isLoggedIn,
+        accessToken
     }
     
     return (
