@@ -5,7 +5,7 @@ import java.util.Set;
 
 public record TMDBMovie(
         long id,
-        Set<Integer> genres,
+        Set<Long> genres,
         Map<Language, String> overview,
         Map<Language, String> title,
         String release_date,

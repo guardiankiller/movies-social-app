@@ -2,6 +2,7 @@ package bg.guardiankiller.moviessocialapp.service;
 
 import bg.guardiankiller.moviessocialapp.joinpoint.TrackExecutionTime;
 import bg.guardiankiller.moviessocialapp.model.dto.Pair;
+import bg.guardiankiller.moviessocialapp.model.dto.TMDBGenre;
 import bg.guardiankiller.moviessocialapp.model.dto.TMDBMovie;
 import bg.guardiankiller.moviessocialapp.model.dto.TMDBPerson;
 
@@ -11,6 +12,8 @@ import java.util.Collection;
 import java.util.List;
 
 public interface MoviesImportService {
+
+    List<TMDBGenre> retrieveAllGenres();
 
     List<TMDBPerson> retrievePeopleFromMovies(Collection<TMDBMovie> movies);
 
