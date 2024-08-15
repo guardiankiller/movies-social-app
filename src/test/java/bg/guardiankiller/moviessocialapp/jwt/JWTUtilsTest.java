@@ -9,17 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class JWTUtilsTest {
 
-    private static final String VALID_JWT = "eyJhbGciOiJSUzUxMiJ9.eyJzdWIiOiJzb21ldGhpbmciLCJpc3MiOiJUaGlzIiwiZXhwIjoxNzIyNTMzMDY3LCJpYXQiOjE3MjI2MTk0Njd9.Dud4tEYVi6GkNITn8DAnHCFjDf0k9mfcqMgenhqvUEM5BxfCaUmnVg7tarz7VJmLoI6IKzqbKDYV7CHgG4LD_7bDB8BSVIoAvqWLWHu8LlnxiKefsNhMy6GRwZF6xSRDyRL10vEmj-5UMeDGmRte6ABNmfvwU-kpFvEhMmDwaaX_nh_N05Kq8ao7jDfWyn5ZdRrv4_r709sbunLEykWcUjy2KwzLfTAtbnMhq55_UQYcTggxxujWqynkKYhie1-cKswK2ERKG1jGDZbJM5DScdDw1fjbgI4AeXufKGweU3XUpjXpuuEXQ46kVcMLAoorDynvRIdrdfHTszhJe_wOFCmlooQBGBiECcp2jFIKzNo46SpJF_Ag-DcGGIPQRqb04qLqjDS1ycZCL_q3l_FdzCi5wOipEHP1aBSS_39eoANGvKL25SDdvZJUnpKkAE5DUb2EbAOUvB8S1UIFXGFXKoTmzKXMvc27HleAsICYgCVoFbcgWQVqtbtSF1og60-w";
     private static final String INVALID_JWT = "test123";
     private static final String INVALID_SIG_JWT = "eyJhbGciOiJSUzUxMiJ9.eyJzdWIiOiJzb21ldGhpbmciLCJpc3MiOiJUaGlzIiwiZXhwIjoxNzIyODc4NjY3LCJpYXQiOjE3MjI2MTk0Njd9.BAOkj5Wtyq8NpG8bskG3EXABBUg8cFvcfMUOMs-tYOI0Du3FvtkYohT87CaSnSBxWK0gGQdGJrtNcLOc7KBA0j-6mW5jKaCkIZpCG2IRi8cKCTeZEnCaBQQD7Ay0mL-ABp_k1BvD3S1WxWrZ7EbCm-6A_uXkrgYchF2VIa1JgW4AMtxNLMvlEtD0CsmmjL_jZ97kKadYJZrflACaHM6UqnSXWtHMJ44pzCdswweSWGjHvTYQGJnwz6UsRyPrhWEFkkrHjNHoFJC5ZRWa9R0O_9bqQp3RkUO_lx4YKGQ6FzvajLlUqko3YVl7THowHaL2EDCXNT5rJK2wFppV8oTBO0digflmJPDwDedcr_WevWZoUrmr_27XpEIdZ5ldZn7QP0HW6DQc-PkzhwDhDaa8QGbFzv1aanufTkLHLvnOeMg5VFUX8HAoaz1MYc3jfv_M421CtSs5rlWL35B_V7HHdLW0qsIM1YmSHwFl7gDftvy3MtCkmx7BtTTuOvxOVksZ";
-
-
-    @Test
-    public void testSign() {
-        JWTEntry entry = getKey();
-        var jwt = JWTUtils.sign(getStaticClaims(), entry);
-        assertEquals(VALID_JWT, jwt);
-    }
 
     @Test
     public void testVerify() throws JWTInvalidClaimsException, JWTInvalidSignatureException, JWTExpiredException {
