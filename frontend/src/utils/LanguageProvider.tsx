@@ -31,6 +31,20 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
                 setCurrent(res[0])
             }
         })
+
+        let id = setInterval(() => {
+            getLanguages()
+            .then(res=>{
+                setLanguages(res)
+                if(current == "") {
+                    setCurrent(res[0])
+                }
+            })
+            if(languages.length > 0) {
+                clearInterval(id)
+            }
+        }, 3000)
+        return () => clearInterval(id)
     }, [])
 
     let value: LnaguageContext = {

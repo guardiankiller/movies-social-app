@@ -15,7 +15,7 @@ export function Header() {
                     {auth.isLoggedIn() ? <Link to="/">{lang.selected == "BG" ? "Дом" : "Home"}</Link> : null}
                     {!auth.isLoggedIn() ? <Link to="/login">{lang.selected == "BG" ? "Влез" : "Login"}</Link> : null}
                     {!auth.isLoggedIn() ? <Link to="/register">{lang.selected == "BG" ? "Регистриай се" : "Register"}</Link> : null}
-                    {auth.isLoggedIn() ? <a href="genres.html">{lang.selected == "BG" ? "Жанрове" : "Genres"}</a> : null}
+                    {auth.isLoggedIn() ? <Link to="/genres">{lang.selected == "BG" ? "Жанрове" : "Genres"}</Link> : null}
                     <Link to="/about">{lang.selected == "BG" ? "Кои сме ние" : "About Us"}</Link>
                     <Link to="/contact">{lang.selected == "BG" ? "Свържи се с нас" : "Contact Us"}</Link>
                     {auth.isLoggedIn() ? <Link to="/faq">FAQ</Link> : null}

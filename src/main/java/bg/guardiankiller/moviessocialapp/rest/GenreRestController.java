@@ -36,7 +36,7 @@ public class GenreRestController {
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "limit", defaultValue = "30") int limit) {
         language = language == null ? Language.EN : language;
-        return movieService.getMoviesByGenreId(id, language, PageRequest.of(page-1, limit));
+        return movieService.getMoviesByGenreId(id, language, PageRequest.of(page, limit));
     }
 
     @GetMapping("/{id}")

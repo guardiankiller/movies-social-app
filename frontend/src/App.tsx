@@ -13,6 +13,8 @@ import { MovieDetails } from './pages/MovieDetails'
 import { LanguageProvider } from './utils/LanguageProvider'
 import { LoadingPage } from './pages/LoadingPage'
 import { FAQ } from './pages/FAQ'
+import { GenresPage } from './pages/GenresPage'
+import { GenreMoviesPage } from './pages/GenreMoviesPage'
 
 const router = createBrowserRouter([
   {
@@ -44,8 +46,16 @@ const router = createBrowserRouter([
         element: <FAQ />
       },
       {
+        path: '/genres',
+        element: <GenresPage />,
+      },
+      {
         path: '/movies/:id',
         element: <MovieDetails />
+      },
+      {
+        path: '/filter/:id/movies',
+        element: <GenreMoviesPage />
       }
     ]
   }
