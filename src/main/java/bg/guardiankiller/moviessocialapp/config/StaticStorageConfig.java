@@ -20,6 +20,8 @@ public class StaticStorageConfig implements WebMvcConfigurer {
         registry
                 .addResourceHandler("/images/**")
                 .addResourceLocations(IMAGES_STORAGE.toUri().toString());
+        registry.addResourceHandler("/assets/**")
+                .addResourceLocations("classpath:/static/assets/");
     }
 
 }
