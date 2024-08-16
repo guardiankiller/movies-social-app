@@ -39,3 +39,6 @@ out/
 images
 src/main/resources/static/assets
 src/main/resources/templates/index.html
+
+.terraform
+.terraform.lock.hcl

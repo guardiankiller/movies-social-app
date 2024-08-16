@@ -22,7 +22,7 @@ public class JWTKeystore {
 
     private JWTKeystore(InputStream in, String password) {
         try {
-            keyStore = KeyStore.getInstance("JKS");
+            keyStore = KeyStore.getInstance("PKCS12");
             keyStore.load(in, password.toCharArray());
         } catch (Exception e) {
             throw new RuntimeException(e);
