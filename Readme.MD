@@ -12,9 +12,11 @@
 ```dtd
 set db_password=softuni
 set db_username=root
+set tmdb_api_key=<tmdb_api_secret>
 set db_url=jdbc:mysql://localhost:3306/movies-social-app (if the database server is on localhost:3306 and has movies-social-app skip this env)
 gradlew bootRun
 ```
+
 - Start the frontend dev server (gradle way)
 ```dtd
 gradlew :frontend:viteDev
@@ -26,3 +28,10 @@ cd frontend
 env.bat
 npm run dev
 ```
+
+### Run integration tests with coverage
+```dtd
+set tmdb_api_key=<tmdb_api_secret>
+gradlew :jacocoTestReport
+```
+The jacoco test coverage is in `build\reports\jacoco\test\html\index.html`
