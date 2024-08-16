@@ -37,3 +37,5 @@ out/
 .vscode/
 
 images
+src/main/resources/static/assets
+src/main/resources/templates/index.html

@@ -82,3 +82,17 @@ jacocoTestReport {
 		html.required = true
 	}
 }
+
+tasks.register('viteDeployAssets', Copy) {
+	dependsOn 'frontend:viteBuild'
+	from('frontend/dist/assets')
+	into('src/main/resources/static/assets')
+}
+
+tasks.register('viteDeploy', Copy) {
+	dependsOn 'viteDeployAssets'
+	from('frontend/dist/index.html')
+	into('src/main/resources/templates/')
+}
+
+tasks.named('processResources').get().dependsOn('viteDeploy')

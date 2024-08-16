@@ -56,8 +56,10 @@ export interface UserInfo {
 
 export class HttpError extends Error {
     constructor(
+        // @ts-ignore
         private statusCode: number, 
-        private statusText: string, 
+        // @ts-ignore
+        private statusText: string,
         public message: string
     ) { super() }
 }
