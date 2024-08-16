@@ -16,7 +16,7 @@ public class JWTKeystore {
     private List<String> alias = null;
 
     public static JWTKeystore fromClasspath(String resource, String password) {
-        try(var in = new FileInputStream(ResourceUtils.getFile("classpath:"+resource))) {
+        try(var in = JWTKeystore.class.getResourceAsStream("/"+resource)) {
             return new JWTKeystore(in, password);
         } catch (IOException e) {
             throw new RuntimeException(e);
