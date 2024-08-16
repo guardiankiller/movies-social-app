@@ -25,7 +25,7 @@ public class SecurityConfiguration {
 
     @Bean
     public JWTEntry authTokenKey() {
-        JWTKeystore keystore = JWTKeystore.fromClasspath("token-key-keystore", "changeit");
+        JWTKeystore keystore = JWTKeystore.fromClasspath("token-key-keystore.p12", "changeit");
         return keystore.getEntry("token-key", "changeit");
     }
 

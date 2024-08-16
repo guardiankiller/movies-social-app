@@ -1,5 +1,8 @@
 package bg.guardiankiller.moviessocialapp.jwt;
 
+import org.springframework.util.ResourceUtils;
+
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -13,7 +16,7 @@ public class JWTKeystore {
     private List<String> alias = null;
 
     public static JWTKeystore fromClasspath(String resource, String password) {
-        try(var in = ClassLoader.getSystemResourceAsStream(resource)) {
+        try(var in = JWTKeystore.class.getResourceAsStream("/"+resource)) {
             return new JWTKeystore(in, password);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -22,7 +25,7 @@ public class JWTKeystore {
 
     private JWTKeystore(InputStream in, String password) {
         try {
-            keyStore = KeyStore.getInstance("JKS");
+            keyStore = KeyStore.getInstance("PKCS12");
             keyStore.load(in, password.toCharArray());
         } catch (Exception e) {
             throw new RuntimeException(e);
