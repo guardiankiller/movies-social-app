@@ -7,7 +7,6 @@ import bg.guardiankiller.moviessocialapp.model.dto.UserDTO;
 import bg.guardiankiller.moviessocialapp.service.AuthenticationService;
 import bg.guardiankiller.moviessocialapp.service.UserService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,11 +14,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,17 +30,16 @@ class AuthenticationServiceTest {
     @Test
     public void testVerifyAccessToken() throws JWTInvalidClaimsException, JWTInvalidSignatureException, JWTExpiredException {
         AuthRequestDTO req = new AuthRequestDTO("test", "test");
-        UserDTO user = new UserDTO();
-        user.setUsername("nikiavatar98");
-        user.setFullName("nikiavatar98@abv.bg");
+        UserDTO user = new UserDTO(1, "nikiavatar98",
+            "", "", "nikiavatar98@abv.bg", Set.of());
         UserService userService = mockUserService(user, true);
         JWTEntry key = getKey();
         UserDetailsService userDetailsService = mockUserDetailsService("test", "test");
         AuthenticationService authenticationService = new AuthenticationServiceImpl(userService, userDetailsService, key);
         var token = authenticationService.login(req);
         JWTClaims claims = JWTUtils.verify(token.accessToken(), key);
-        assertEquals(user.getUsername(), claims.getClaim("username"));
-        assertEquals(user.getFullName(), claims.getClaim("fullName"));
+        assertEquals(user.username(), claims.getClaim("username"));
+        assertEquals(user.fullName(), claims.getClaim("fullName"));
 
         AtomicReference<UsernamePasswordAuthenticationToken> auth = new AtomicReference<>();
         SecurityContext securityContext = mock(SecurityContext.class);
@@ -59,17 +57,16 @@ class AuthenticationServiceTest {
     @Test
     public void testLogin() throws JWTInvalidClaimsException, JWTInvalidSignatureException, JWTExpiredException {
         AuthRequestDTO req = new AuthRequestDTO("test", "test");
-        UserDTO user = new UserDTO();
-        user.setUsername("nikiavatar98");
-        user.setFullName("nikiavatar98@abv.bg");
+        UserDTO user = new UserDTO(1, "nikiavatar98",
+            "", "", "nikiavatar98@abv.bg", Set.of());
         UserService userService = mockUserService(user, true);
         JWTEntry key = getKey();
         UserDetailsService userDetailsService = null;
         AuthenticationService authenticationService = new AuthenticationServiceImpl(userService, userDetailsService, key);
         var token = authenticationService.login(req);
         JWTClaims claims = JWTUtils.verify(token.accessToken(), key);
-        assertEquals(user.getUsername(), claims.getClaim("username"));
-        assertEquals(user.getFullName(), claims.getClaim("fullName"));
+        assertEquals(user.username(), claims.getClaim("username"));
+        assertEquals(user.fullName(), claims.getClaim("fullName"));
     }
 
     @Test
@@ -85,7 +82,8 @@ class AuthenticationServiceTest {
     @Test
     public void testLoginWhenPasswordNotValid() {
         AuthRequestDTO req = new AuthRequestDTO("test", "test");
-        UserService userService = mockUserService(new UserDTO(), false);
+        UserService userService = mockUserService(new UserDTO(0,"",
+            "", "", "", Set.of()), false);
         JWTEntry key = getKey();
         AuthenticationService authenticationService = new AuthenticationServiceImpl(userService, null, key);
         ServerException e = assertThrows(ServerException.class, ()-> authenticationService.login(req));

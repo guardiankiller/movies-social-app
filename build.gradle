@@ -55,15 +55,20 @@ dependencies {
 	implementation(
 			'org.liquibase:liquibase-core',
 			'org.modelmapper:modelmapper:3.2.0',
-			'io.jsonwebtoken:jjwt:0.9.1'
+            'org.mapstruct:mapstruct:1.6.2',
+			'io.jsonwebtoken:jjwt:0.9.1',
+            'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 	)
 
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor (
+            'org.projectlombok:lombok',
+            'org.mapstruct:mapstruct-processor:1.6.2'
+    )
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
+    testAnnotationProcessor "org.mapstruct:mapstruct-processor:1.6.2"
 	implementation platform('org.testcontainers:testcontainers-bom:1.19.8') //import bom
 	testImplementation 'org.testcontainers:testcontainers' //no version specified
 	testImplementation 'org.testcontainers:mysql' //no version specified

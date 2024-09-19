@@ -50,8 +50,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var claims = JWTUtils.newClaims();
         claims.setSubject("User Details");
         claims.setIssuer("social-app");
-        claims.addClaim("username", user.getUsername());
-        claims.addClaim("fullName", user.getFullName());
+        claims.addClaim("username", user.username());
+        claims.addClaim("fullName", user.fullName());
         var exp = LocalDateTime.now().plusMinutes(DURATION_IN_MIN);
         claims.setExpiration(exp);
         var token = JWTUtils.sign(claims, keyEntry);

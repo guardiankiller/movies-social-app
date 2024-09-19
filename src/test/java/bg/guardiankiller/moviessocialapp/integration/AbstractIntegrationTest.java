@@ -1,7 +1,10 @@
 package bg.guardiankiller.moviessocialapp.integration;
 
+import bg.guardiankiller.moviessocialapp.mappings.UserMappings;
+import bg.guardiankiller.moviessocialapp.mappings.UserMappingsImpl;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;

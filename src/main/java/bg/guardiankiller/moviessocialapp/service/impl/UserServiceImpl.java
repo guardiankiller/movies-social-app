@@ -1,5 +1,6 @@
 package bg.guardiankiller.moviessocialapp.service.impl;
 
+import bg.guardiankiller.moviessocialapp.mappings.UserMappings;
 import bg.guardiankiller.moviessocialapp.model.UserRoles;
 import bg.guardiankiller.moviessocialapp.model.dto.UserDTO;
 import bg.guardiankiller.moviessocialapp.model.dto.UserRegisterDTO;
@@ -23,19 +24,21 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
+    private final UserMappings mappings;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, ModelMapper mapper) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, ModelMapper mapper,
+        UserMappings mappings) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.mapper = mapper;
+        this.mappings = mappings;
     }
 
     @Override
     @Transactional
     public void registerUser(UserRegisterDTO userRegisterDTO) {
-        UserEntity newUserEntity = mapper.map(userRegisterDTO, UserEntity.class);
-        newUserEntity.setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
+        UserEntity newUserEntity = mappings.map(userRegisterDTO, passwordEncoder);
         RoleEntity roleEntity = roleRepository.findByName(UserRoles.USER);
         newUserEntity.addRole(roleEntity);
 
@@ -44,7 +47,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserDTO> findUserByUsername(String username) {
-        return userRepository.findUserByUsername(username).map(this::toUserDTO);
+        return userRepository.findUserByUsername(username).map(mappings::map);
     }
 
     @Override
@@ -53,11 +56,5 @@ public class UserServiceImpl implements UserService {
                 .findUserByUsername(username)
                 .map(user -> passwordEncoder.matches(password, user.getPassword()))
                 .orElse(false);
-    }
-
-    private UserDTO toUserDTO(UserEntity entity) {
-        var dto = mapper.map(entity, UserDTO.class);
-        dto.setRoles(entity.getRoles().stream().map(RoleEntity::getName).collect(Collectors.toSet()));
-        return dto;
     }
 }
