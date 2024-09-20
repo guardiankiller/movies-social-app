@@ -20,5 +20,7 @@ public interface UserService {
 
     Optional<UserDTO> setUserRoles(String username, UserRoles[] roles);
 
+    Optional<UserDTO> deleteUser(String username);
+
     boolean authenticateUser(String username, String password);
 }

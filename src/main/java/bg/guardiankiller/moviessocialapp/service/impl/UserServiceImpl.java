@@ -122,6 +122,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
+    public Optional<UserDTO> deleteUser(String username) {
+        return userRepository.findUserByUsername(username)
+                   .map(user -> {
+                       userRepository.delete(user);
+                       return user;
+                   }).map(mapper::map);
+    }
+
+    @Override
     public boolean authenticateUser(String username, String password) {
         return userRepository
                 .findUserByUsername(username)

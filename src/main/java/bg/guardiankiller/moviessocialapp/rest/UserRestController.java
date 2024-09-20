@@ -154,4 +154,23 @@ public class UserRestController {
         @Parameter(description = "the array of roles", required = true) @RequestBody UserRolesDTO roles) {
         return ResponseEntity.of(userService.setUserRoles(username, roles.getRoles()));
     }
+
+    @DeleteMapping("{username}")
+    @Operation(
+        summary = "delete the user",
+        description = "Deletes the user given their username",
+        responses = {
+            @ApiResponse(responseCode = "204",
+                description = "If the update is deleted",
+                content = @Content),
+            @ApiResponse(responseCode = "404",
+                description = "If the user is not found",
+                content = @Content)
+        })
+    @PreAuthorize("hasAuthority('ADMIN') || #username == authentication.name")
+    public ResponseEntity<?> removeUser(
+        @Parameter(description = "The user's username.", required = true) @PathVariable String username) {
+        var code = userService.deleteUser(username).map(x->HttpStatus.NO_CONTENT).orElse(HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(code).build();
+    }
 }
