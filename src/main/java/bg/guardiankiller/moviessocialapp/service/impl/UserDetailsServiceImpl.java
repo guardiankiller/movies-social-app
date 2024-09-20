@@ -1,7 +1,11 @@
 package bg.guardiankiller.moviessocialapp.service.impl;
 
+import bg.guardiankiller.moviessocialapp.model.UserRoles;
+import bg.guardiankiller.moviessocialapp.model.entity.RoleEntity;
 import bg.guardiankiller.moviessocialapp.model.entity.UserEntity;
 import bg.guardiankiller.moviessocialapp.repository.UserRepository;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,12 +30,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found!"));
     }
 
+    //TODO: User mapstruct
     private static UserDetails map(UserEntity userEntity) {
         return org.springframework.security.core.userdetails.User
-                .withUsername(userEntity.getUsername())
-                .password(userEntity.getPassword())
-                .authorities(List.of())/*TODO*/
-                .disabled(false)
-                .build();
+                   .withUsername(userEntity.getUsername())
+                   .password(userEntity.getPassword())
+                   .authorities(userEntity.getRoles().stream()
+                                          .map(RoleEntity::getName)
+                                    .map(UserRoles::name)
+                                    .map(SimpleGrantedAuthority::new)
+                                    .toList())
+                   .disabled(false)
+                   .build();
     }
 }
