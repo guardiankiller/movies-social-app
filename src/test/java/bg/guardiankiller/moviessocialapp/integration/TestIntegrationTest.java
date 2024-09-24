@@ -1,5 +1,6 @@
 package bg.guardiankiller.moviessocialapp.integration;
 
+import bg.guardiankiller.moviessocialapp.mappings.UserMappingsImpl;
 import bg.guardiankiller.moviessocialapp.model.dto.AuthRequestDTO;
 import bg.guardiankiller.moviessocialapp.model.dto.AuthResponseDTO;
 import bg.guardiankiller.moviessocialapp.model.dto.Movie;

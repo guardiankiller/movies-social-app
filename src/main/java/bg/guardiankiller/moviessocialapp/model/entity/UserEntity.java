@@ -44,4 +44,9 @@ public class UserEntity {
         getRoles().add(roleEntity);
         roleEntity.getUsers().add(this);
     }
+
+    public void removeRole(RoleEntity roleEntity) {
+        getRoles().remove(roleEntity);
+        roleEntity.getUsers().remove(this);
+    }
 }
