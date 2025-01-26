@@ -7,6 +7,13 @@ The Movies Social App is an application to share and comment on movies:
  - Browse movies
  - Change languages from English to Bulgarian and vice versa
 
+## Preview images
+
+<img src="https://github.com/guardiankiller/movies-social-app/blob/main/preview/1image.PNG?raw=true" width="800"/>
+<img src="https://github.com/guardiankiller/movies-social-app/blob/main/preview/2image.jpg?raw=true" width="800"/>
+<img src="https://github.com/guardiankiller/movies-social-app/blob/main/preview/3image.jpg?raw=true" width="800"/>
+<img src="https://github.com/guardiankiller/movies-social-app/blob/main/preview/4image.PNG?raw=true" width="800"/>
+
 ## App Details
 - This app is written in `Spring Boot`. It uses `Spring Security` for authentication. Authentication is with JWT 
   tokens.
